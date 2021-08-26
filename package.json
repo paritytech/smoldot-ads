@@ -1,0 +1,46 @@
+{
+  "name": "smol-ads",
+  "version": "0.0.1",
+  "description": "",
+  "author": "Parity Team <admin@parity.io>",
+  "contributors": [
+    "Nikolaos Kontakis <nikolaos@parity.io>",
+    "Sveta Goldstein <sveta@parity.io>"
+  ],
+  "license": "GPL-3.0-only",
+  "browserslist": [
+    "last 2 versions"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"yarn typecheck:watch\" \"parcel ./src/index.html\"",
+    "build": "yarn typecheck && parcel build ./src/index.html --detailed-report --public-url ./ --no-autoinstall",
+    "typecheck": "tsc -b",
+    "typecheck:watch": "tsc -b --watch"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "@material-ui/types": "^5.1.0",
+    "@types/jest": "^27.0.1",
+    "@types/react": "^17.0.19",
+    "@types/react-dom": "^17.0.9",
+    "@types/react-hot-loader": "^4.1.1",
+    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "@typescript-eslint/parser": "^4.29.3",
+    "concurrently": "^6.2.1",
+    "eslint": "^7.32.0",
+    "jest": "^27.0.6",
+    "parcel": "2.0.0-rc.0",
+    "ts-jest": "^27.0.5",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/styles": "^4.11.4",
+    "@substrate/connect": "^0.3.18",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-transition-group": "^4.4.2"
+  }
+}
