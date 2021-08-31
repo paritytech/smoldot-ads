@@ -17,10 +17,9 @@ const Main = () => {
 
   return (
     <ThemeProvider theme={appliedTheme}>
-       <AppContext.Provider value={{notification, setNotification}}>
-          <Grid container spacing={0}>
-            <Notification
-              {...notification} />
+      <AppContext.Provider value={{notification, setNotification}}>
+        <Notification {...notification} />
+          <Grid container xs={12}>
             <Sidebar />
             <Container />
           </Grid>

@@ -26,8 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2.4),
       color: theme.palette.text.primary,
       minHeight: '100vh',
-      borderRight: '1px solid #EAEEF1',
-      width: '250px'
+      borderRight: '1px solid #EAEEF1'
     },
     menuIcon: {
       color: 'inherit',
@@ -82,7 +81,7 @@ const Sidebar = () => {
   const classes = useStyles();
   
   return (
-    <Grid item className={classes.sidebar}>
+    <Grid item sm={3} md={2} className={classes.sidebar}>
       <Box paddingTop={2} paddingBottom={2}>
         <Typography variant='h4'>
           Smold Ads
