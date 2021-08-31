@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, createStyles, Grid, makeStyles, Input, Theme, IconButton, Chip } from '@material-ui/core';
+import { createStyles, Grid, makeStyles, Input, Theme, IconButton, Chip } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 
 const useStyles = makeStyles((theme: Theme) =>
