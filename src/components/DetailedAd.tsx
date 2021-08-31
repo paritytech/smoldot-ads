@@ -32,7 +32,6 @@ const useStyles = makeStyles(theme => ({
     width: "18px",
   },
   adBox: {
-    cursor: "pointer",
     margin: "10px",
     width: "100%",
     border: "1px solid #ABB8BF",
@@ -73,6 +72,9 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 500,
     fontSize: '12px',
     margin:'0 9px 0'
+  },
+  clearIcon: {
+    cursor: "pointer"
   }
 }));
 
@@ -97,7 +99,7 @@ const DetailedAd: React.FunctionComponent<Props> = ({ address, ad, setClicked }:
           {ad.tags.map(tag =>
             <Chip size="small" label={tag} />
           )}
-          <ClearIcon onClick={()=> setClicked(null)}/>
+          <ClearIcon className={classes.clearIcon} onClick={()=> setClicked(null)}/>
         </Box>
       </Box>
       <Box display="flex" alignItems="center" className={classes.row}>

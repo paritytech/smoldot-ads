@@ -9,6 +9,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     main: {
       paddingLeft: "20px",
+      overflow: "hidden"
     },
     adsContainer: {
       overflowY: "scroll",
@@ -122,8 +123,8 @@ const Container = () => {
       <Grid item xs={9}>
         <SearchBar />
       </Grid>
-      <Grid item container xs={12} className={classes.adsContainer} spacing={4}>
-        <Grid item xs={6}>
+      <Grid item container xs={12} spacing={4}>
+        <Grid item xs={6} className={classes.adsContainer}>
           {ads.map((ad, i) => (
             <Ad
               key={i}
