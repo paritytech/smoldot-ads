@@ -95,7 +95,6 @@ const Ad: React.FunctionComponent<Props> = ({ address, ad, isClicked, setClicked
     setFormDate(date.getDate()+"/"+(date.getMonth()+1)+"/"+date.getFullYear()+" "+date.getHours()+":"+date.getMinutes());
   }, [ad.created])
 
-  console.log('ad.id', ad.id)
   return (
     <Box className={classes.adBox} onClick={()=> setClicked(ad.id)}>
       <Box display="flex" alignItems="center" justifyContent="space-between" className={classes.row}>

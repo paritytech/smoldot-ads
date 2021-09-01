@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Notification = ({
+const NotificationBase = ({
     show = false,
     title,
     text,
@@ -108,5 +108,17 @@ const Notification = ({
     </CSSTransition>
   );
 };
+
+const Notification: React.FC = ({ children }) => {
+  const [notification, setNotification] = useState<NotificationProps>({
+    text: ''
+  });  
+  return (
+    <AppContext.Provider value={{notification, setNotification}}>
+        <NotificationBase {...notification} />
+        {children}
+      </AppContext.Provider>
+  )
+}
 
 export default Notification;
