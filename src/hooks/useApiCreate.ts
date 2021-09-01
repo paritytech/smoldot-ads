@@ -26,6 +26,10 @@ export default function useApiCreate () {
         
         const wsProvider = new WsProvider('ws://127.0.0.1:9944');
         const api = await ApiPromise.create({ provider: wsProvider });
+
+        // Checks if the component using this hook is still mounted in order to set theApi
+        // If this check does not exist there may be error on console saying:
+        // "Cannot setState on unmounted Component"
         mountedRef.current && setApi(api)
       } catch (err) {
         l.error("Error:", err)
