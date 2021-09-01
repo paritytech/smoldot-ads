@@ -13,12 +13,7 @@
     "/dns/3.westend.paritytech.net/tcp/30333/p2p/12D3KooWGi1tCpKXLMYED9y28QXLnwgD4neYb1Arqq4QpeV1Sv3K",
     "/dns/3.westend.paritytech.net/tcp/30334/ws/p2p/12D3KooWGi1tCpKXLMYED9y28QXLnwgD4neYb1Arqq4QpeV1Sv3K"
   ],
-  "telemetryEndpoints": [
-    [
-      "wss://telemetry.polkadot.io/submit/",
-      0
-    ]
-  ],
+  "telemetryEndpoints": [["wss://telemetry.polkadot.io/submit/", 0]],
   "protocolId": "wnd2",
   "properties": {
     "ss58Format": 42,
