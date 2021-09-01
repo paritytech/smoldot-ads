@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { logger } from "@polkadot/util"
 import useIsMountedRef from "./useIsMountedRef"
+// TODO: Alter the polkadotJS api to Detector
 // import { Detector }  from "@substrate/connect"
 // import adzSpecs from '../assets/ads-chainspec.json';
 // import westend from '../assets/westend.json';
@@ -16,7 +17,9 @@ export default function useApiCreate () {
   useEffect((): void => {
     const choseSmoldot = async (): Promise<void> => {
       try {
-        // const chainSpec =  JSON.stringify(adzSpecs);
+        // TODO: Alter the polkadotJS api to Detector
+        //
+        // const chainSpec = JSON.stringify(adzSpecs);
         // const detect = new Detector("Smoldot Adz")
         // const api = await detect.connect("westend", { name: "Adz", spec: chainSpec })
         // console.log("Smoldot Adz is now connected to westend and parachain Adz")
@@ -29,7 +32,7 @@ export default function useApiCreate () {
       }
     }    
     void choseSmoldot()
-  }, [mountedRef])
+  }, [])
 
   return api
 }
