@@ -110,7 +110,6 @@ const Ad: React.FunctionComponent<Props> = ({
     )
   }, [ad.created])
 
-  console.log("ad.id", ad.id)
   return (
     <Box className={classes.adBox} onClick={() => setClicked(ad.id)}>
       <Box

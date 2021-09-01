@@ -130,7 +130,7 @@ const Container = () => {
           {ads.map((ad, i) => (
             <Ad
               key={i}
-              address={"5FZvQCaobpjwyf5fsH7SD8FaP4MaQxM4ndTsN94tFiELkW9j"}
+              address={"5DTestUPts3kjeXSTMyerHihn1uwMfLj8vU8sqF7qYrFabHE"}
               ad={ad}
               isClicked={isClicked}
               setClicked={setIsClicked}
@@ -140,7 +140,7 @@ const Container = () => {
         <Grid item xs={6}>
           {isClicked && clickedAd && (
             <DetailedAd
-              address={"5FZvQCaobpjwyf5fsH7SD8FaP4MaQxM4ndTsN94tFiELkW9j"}
+              address={"5DTestUPts3kjeXSTMyerHihn1uwMfLj8vU8sqF7qYrFabHE"}
               ad={clickedAd}
               setClicked={setIsClicked}
             />
