@@ -7,5 +7,5 @@ interface ApplicationProps {
 }
 
 export const AppContext = React.createContext<ApplicationProps>(
-  {} as ApplicationProps
+  {} as ApplicationProps,
 )

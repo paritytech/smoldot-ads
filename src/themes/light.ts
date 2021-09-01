@@ -11,41 +11,41 @@ const light: ThemeOptions = {
     type: "light",
     common: {
       black: colors.black,
-      white: colors.white
+      white: colors.white,
     },
     background: {
       paper: colors.light.light,
-      default: colors.light.dark
+      default: colors.light.dark,
     },
     primary: {
       light: colors.substrate.light,
       main: colors.substrate.dark,
       dark: colors.substrate.dark,
-      contrastText: colors.black
+      contrastText: colors.black,
     },
     secondary: {
       light: "#ABB8BF",
       main: colors.black,
       dark: "#534c5d",
-      contrastText: colors.white
+      contrastText: colors.white,
     },
     error: {
       light: "rgba(247, 4, 7, 1)",
       main: "rgba(235, 4, 7, 1)",
       dark: "rgba(197, 5, 8, 1)",
-      contrastText: colors.paper
+      contrastText: colors.paper,
     },
     text: {
       primary: colors.black,
       secondary: colors.dark.main,
       disabled: colors.dark.light,
-      hint: colors.yellow.main
+      hint: colors.yellow.main,
     },
     action: {
-      active: colors.substrate.dark
+      active: colors.substrate.dark,
     },
-    divider: grey[300]
-  }
+    divider: grey[300],
+  },
 }
 
 export default light

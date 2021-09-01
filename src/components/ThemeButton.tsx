@@ -11,8 +11,8 @@ interface Props extends IconButtonProps {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    color: theme.palette.primary.main
-  }
+    color: theme.palette.primary.main,
+  },
 }))
 
 const ThemeButton: React.FunctionComponent<Props> = ({

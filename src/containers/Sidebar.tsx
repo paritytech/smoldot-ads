@@ -10,7 +10,7 @@ import {
   IconButton,
   MenuList,
   MenuItem,
-  ListItemIcon
+  ListItemIcon,
 } from "@material-ui/core"
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline"
 import AssignmentOutlinedIcon from "@material-ui/icons/AssignmentOutlined"
@@ -24,49 +24,49 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     menuItemRoot: {
       color: theme.palette.text.secondary,
-      paddingLeft: "0px"
+      paddingLeft: "0px",
     },
     menuItemSelected: {
       "&$menuItemSelected, &$menuItemSelected:focus, &$menuItemSelected:hover":
         {
           backgroundColor: "transparent",
-          color: theme.palette.text.primary
-        }
+          color: theme.palette.text.primary,
+        },
     },
     sidebar: {
       backgroundColor: "#FCFCFC",
       padding: theme.spacing(2.4),
       color: theme.palette.text.primary,
       minHeight: "100vh",
-      borderRight: "1px solid #EAEEF1"
+      borderRight: "1px solid #EAEEF1",
     },
     menuIcon: {
       color: "inherit",
       minWidth: "0",
       "&:hover": {
         color: "inherit",
-        background: "transparent"
-      }
+        background: "transparent",
+      },
     },
     buttonAdd: {
       backgroundColor: "#F5EFF6",
       color: "#334048",
       marginLeft: "8px",
-      borderRadius: "10px"
+      borderRadius: "10px",
     },
     links: {
-      marginLeft: "15px"
+      marginLeft: "15px",
     },
     linksNotification: {
       color: theme.palette.text.primary,
-      marginLeft: "5px"
+      marginLeft: "5px",
     },
     helpGrid: {
       position: "absolute",
       bottom: "20px",
-      maxWidth: "250px"
-    }
-  })
+      maxWidth: "250px",
+    },
+  }),
 )
 
 const NotifSamples = (props: { showAction?: number }) => {
@@ -78,7 +78,7 @@ const NotifSamples = (props: { showAction?: number }) => {
     buttonText: "Explore substrate tutorials",
     show: !appCtx.notification.show,
     buttonAction: () =>
-      window.open("https://paritytech.github.io/substrate-connect/", "_blank")
+      window.open("https://paritytech.github.io/substrate-connect/", "_blank"),
   }
 
   const finObj = props.showAction
@@ -114,7 +114,7 @@ const Sidebar = () => {
         <MenuItem
           classes={{
             root: classes.menuItemRoot,
-            selected: classes.menuItemSelected
+            selected: classes.menuItemSelected,
           }}
         >
           <ListItemIcon className={classes.menuIcon}>
@@ -130,7 +130,7 @@ const Sidebar = () => {
         <MenuItem
           classes={{
             root: classes.menuItemRoot,
-            selected: classes.menuItemSelected
+            selected: classes.menuItemSelected,
           }}
           selected
         >
@@ -144,7 +144,7 @@ const Sidebar = () => {
         <MenuItem
           classes={{
             root: classes.menuItemRoot,
-            selected: classes.menuItemSelected
+            selected: classes.menuItemSelected,
           }}
         >
           <ListItemIcon className={classes.menuIcon}>

@@ -6,20 +6,20 @@ import {
   Input,
   Theme,
   IconButton,
-  Chip
+  Chip,
 } from "@material-ui/core"
 import SearchIcon from "@material-ui/icons/Search"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     gridder: {
-      margin: "40px 0 10px 10px"
+      margin: "40px 0 10px 10px",
     },
     textfield: {
       border: "1px solid #eee",
       padding: "4.5px 8px 3.5px",
       borderRadius: "4px",
-      backgroundColor: "#F7F7F7"
+      backgroundColor: "#F7F7F7",
     },
     iconButton: {
       border: "1px solid #eee",
@@ -29,16 +29,16 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.primary,
       backgroundColor: "transparent",
       "&:hover": {
-        backgroundColor: "#fff"
-      }
+        backgroundColor: "#fff",
+      },
     },
     tagContainer: {
-      padding: "10px 0"
+      padding: "10px 0",
     },
     chip: {
-      margin: "4px 5px 0 0"
-    }
-  })
+      margin: "4px 5px 0 0",
+    },
+  }),
 )
 
 const tagSeparators = [",", ";", " "]

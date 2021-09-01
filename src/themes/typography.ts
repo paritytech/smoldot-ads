@@ -6,49 +6,49 @@ const typography: ThemeOptions = {
     h1: {
       fontWeight: 500,
       fontSize: 30,
-      lineHeight: "120%"
+      lineHeight: "120%",
     },
     h2: {
       fontWeight: 400,
       fontSize: 22,
       lineHeight: "120%",
-      letterSpacing: 0.25
+      letterSpacing: 0.25,
     },
     h3: {
       fontWeight: 600,
       fontSize: 20,
-      lineHeight: "120%"
+      lineHeight: "120%",
     },
     h4: {
       fontWeight: 500,
       fontSize: 18,
-      lineHeight: "120%"
+      lineHeight: "120%",
     },
     body1: {
       fontWeight: 400,
       fontSize: 14,
       lineHeight: "120%",
-      letterSpacing: 0.15
+      letterSpacing: 0.15,
     },
     body2: {
       fontWeight: 400,
       fontSize: 12,
       lineHeight: "120%",
-      letterSpacing: 0.25
+      letterSpacing: 0.25,
     },
     button: {
       fontWeight: 500,
       fontSize: 14,
       lineHeight: "140%",
       letterSpacing: 0.2,
-      textTransform: "none"
+      textTransform: "none",
     },
     subtitle1: {
       fontFamily:
         "SFMono-Regular, Consolas , Liberation Mono, Menlo, monospace",
       fontWeight: 400,
       fontSize: 17,
-      lineHeight: "200%"
+      lineHeight: "200%",
     },
     subtitle2: {
       fontFamily:
@@ -56,14 +56,14 @@ const typography: ThemeOptions = {
       fontWeight: 400,
       fontSize: 13,
       lineHeight: "135%",
-      letterSpacing: 0.1
+      letterSpacing: 0.1,
     },
     overline: {
       fontWeight: 500,
       fontSize: 10,
       lineHeight: "120%",
-      textTransform: "uppercase"
-    }
-  }
+      textTransform: "uppercase",
+    },
+  },
 }
 export default typography

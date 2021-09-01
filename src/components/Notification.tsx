@@ -5,7 +5,7 @@ import {
   IconButton,
   makeStyles,
   Paper,
-  Typography
+  Typography,
 } from "@material-ui/core"
 import CloseIcon from "@material-ui/icons/Close"
 import { CSSTransition } from "react-transition-group"
@@ -14,20 +14,20 @@ import { AppContext } from "../contexts/AppContext"
 const useStyles = makeStyles((theme) => ({
   ".notification-enter": {
     opacity: "0",
-    transform: "scale(0.9)"
+    transform: "scale(0.9)",
   },
   ".notification-enter-active": {
     opacity: "1",
     transform: "translateX(0)",
-    transition: "opacity 300ms, transform 300ms"
+    transition: "opacity 300ms, transform 300ms",
   },
   ".notification-exit": {
-    opacity: "1"
+    opacity: "1",
   },
   ".notification-exit-active": {
     opacity: "0",
     transform: "scale(0.9)",
-    transition: "opacity 300ms, transform 300ms"
+    transition: "opacity 300ms, transform 300ms",
   },
   paperBox: {
     opacity: 1,
@@ -37,24 +37,24 @@ const useStyles = makeStyles((theme) => ({
     right: "10px",
     top: "10px",
     padding: "0 10px",
-    zIndex: 9999
+    zIndex: 9999,
   },
   closeNotification: {
     position: "absolute",
-    right: "0"
+    right: "0",
   },
   title: {
     width: "90%",
-    margin: "15px 0"
+    margin: "15px 0",
   },
   text: {
     width: "95%",
-    margin: "10px 0"
+    margin: "10px 0",
   },
   notifButton: {
     border: "1px solid #ccc",
-    margin: "10px 0"
-  }
+    margin: "10px 0",
+  },
 }))
 
 const Notification = ({
@@ -63,7 +63,7 @@ const Notification = ({
   text,
   buttonText,
   buttonAction,
-  autoClose
+  autoClose,
 }: NotificationProps) => {
   const classes = useStyles()
   const appCtx = useContext(AppContext)
@@ -90,7 +90,7 @@ const Notification = ({
         enter: classes[".notification-enter"],
         enterActive: classes[".notification-enter-active"],
         exit: classes[".notification-exit"],
-        exitActive: classes[".notification-exit-active"]
+        exitActive: classes[".notification-exit-active"],
       }}
       unmountOnExit
     >

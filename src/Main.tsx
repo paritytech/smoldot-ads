@@ -12,7 +12,7 @@ import { NotificationProps } from "./types"
 const Main = () => {
   const appliedTheme = createTheme(AdsLight)
   const [notification, setNotification] = useState<NotificationProps>({
-    text: ""
+    text: "",
   })
 
   return (

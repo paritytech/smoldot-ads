@@ -9,13 +9,13 @@ const useStyles = makeStyles(() =>
   createStyles({
     main: {
       paddingLeft: "20px",
-      overflow: "hidden"
+      overflow: "hidden",
     },
     adsContainer: {
       overflowY: "scroll",
-      height: "90vh"
-    }
-  })
+      height: "90vh",
+    },
+  }),
 )
 
 const ads = [
@@ -27,7 +27,7 @@ const ads = [
     tags: ["Announcement"],
     location: "10555, Berlin",
     body: "I bake and deliver pizza!",
-    comments: 8
+    comments: 8,
   },
   {
     id: 2,
@@ -37,7 +37,7 @@ const ads = [
     tags: ["Pizza"],
     location: "10555, Berlin",
     body: "This is an announcement",
-    comments: 8
+    comments: 8,
   },
   {
     id: 3,
@@ -47,7 +47,7 @@ const ads = [
     tags: ["Pizza"],
     location: "10555, Berlin",
     body: "I bake and deliver pizza!",
-    comments: 8
+    comments: 8,
   },
   {
     id: 4,
@@ -57,7 +57,7 @@ const ads = [
     tags: ["Jobs"],
     location: "10555, Berlin",
     body: "I bake and deliver pizza!",
-    comments: 8
+    comments: 8,
   },
   {
     id: 5,
@@ -67,7 +67,7 @@ const ads = [
     tags: ["CV"],
     location: "10555, Berlin",
     body: "This is an announcement",
-    comments: 8
+    comments: 8,
   },
   {
     id: 6,
@@ -77,7 +77,7 @@ const ads = [
     tags: ["Swap"],
     location: "10555, Berlin",
     body: "I’ve got 10’000 KSM which I’d like to exchange for DOT. My price is 0.04 and I will use the ...",
-    comments: 8
+    comments: 8,
   },
   {
     id: 7,
@@ -87,7 +87,7 @@ const ads = [
     tags: [],
     location: "10555, Berlin",
     body: "Just testing",
-    comments: 8
+    comments: 8,
   },
   {
     id: 8,
@@ -97,8 +97,8 @@ const ads = [
     tags: ["Pizza", "Test", "More", "Tags"],
     location: "10555, Berlin",
     body: "Just testing more tags",
-    comments: 8
-  }
+    comments: 8,
+  },
 ]
 
 type AdType = {

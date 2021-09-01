@@ -24,33 +24,33 @@ interface Props {
 
 const useStyles = makeStyles((theme) => ({
   row: {
-    marginBottom: "12.5px"
+    marginBottom: "12.5px",
   },
   visibilityIcon: {
     marginRight: "10px",
     color: "#7E8D95",
-    width: "18px"
+    width: "18px",
   },
   adBox: {
     margin: "10px",
     width: "100%",
     border: "1px solid #ABB8BF",
     borderRadius: "4px",
-    padding: "20px 15px"
+    padding: "20px 15px",
   },
   identIcon: {
     marginRight: "10px",
     border: "0.5px solid #ccc",
-    borderRadius: "10px"
+    borderRadius: "10px",
   },
   author: {
-    fontWeight: 600
+    fontWeight: 600,
   },
   posted: {
     margin: "0 10px",
     fontWeight: 400,
     fontSize: "13px",
-    color: "#7E8D95"
+    color: "#7E8D95",
   },
   date: {
     padding: "2px 6px",
@@ -58,30 +58,30 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "5px",
     fontWeight: 400,
     fontSize: "11px",
-    color: "#556068"
+    color: "#556068",
   },
   body: {
-    color: "#172026"
+    color: "#172026",
   },
   comments: {
     color: "#556068",
-    fontWeight: 500
+    fontWeight: 500,
   },
   bubble: {
     color: "#556068",
     fontWeight: 500,
     fontSize: "12px",
-    margin: "0 9px 0"
+    margin: "0 9px 0",
   },
   clearIcon: {
-    cursor: "pointer"
-  }
+    cursor: "pointer",
+  },
 }))
 
 const DetailedAd: React.FunctionComponent<Props> = ({
   address,
   ad,
-  setClicked
+  setClicked,
 }: Props) => {
   const classes = useStyles()
 
@@ -98,7 +98,7 @@ const DetailedAd: React.FunctionComponent<Props> = ({
         " " +
         date.getHours() +
         ":" +
-        date.getMinutes()
+        date.getMinutes(),
     )
   }, [ad.created])
 
