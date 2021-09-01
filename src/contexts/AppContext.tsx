@@ -1,9 +1,11 @@
-import React from 'react';
-import { NotificationProps} from '../types';
+import React from "react"
+import { NotificationProps } from "../types"
 
 interface ApplicationProps {
-  notification: NotificationProps,
+  notification: NotificationProps
   setNotification: (not: NotificationProps) => void
 }
 
-export const AppContext = React.createContext<ApplicationProps>({} as ApplicationProps);
+export const AppContext = React.createContext<ApplicationProps>(
+  {} as ApplicationProps
+)
