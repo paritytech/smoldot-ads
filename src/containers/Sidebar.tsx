@@ -19,6 +19,12 @@ import FolderOpenIcon from "@material-ui/icons/FolderOpen"
 import ForumIcon from "@material-ui/icons/Forum"
 
 import { AppContext } from "../contexts/AppContext"
+import { ApiCreateType } from "../types"
+import useApiCreate from "../hooks/useApiCreate"
+
+// For dummy data
+import { SignerOptions } from "@polkadot/api/types"
+import { Keyring } from "@polkadot/api"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -92,8 +98,64 @@ const NotifSamples = (props: { showAction?: number }) => {
   )
 }
 
+// DUMMY GENERATOR
+// TODO:  DELETE WHEN UI IS READY
+const tags = [
+  "pizza",
+  "cola",
+  "whiskey",
+  "dog",
+  "cat",
+  "mouse",
+  "birdy",
+  "fox",
+  "cow",
+  "something",
+]
+
+const randomString = (length: number): string => {
+  let result: string = ""
+  const characters: string =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
+  const charactersLength: number = characters.length
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+  }
+  return result
+}
+
+// DUMMY GENERATOR END
+
 const Sidebar = () => {
   const classes = useStyles()
+  const apiResp: ApiCreateType = useApiCreate()
+
+  // Generates Dummy ads (1 every 5 seconds)
+  const generateAds = () => {
+    let x = 0
+    const intervalID = window.setInterval(() => {
+      createAd()
+      if (++x === 6) window.clearInterval(intervalID)
+    }, 5000)
+  }
+  const createAd = async () => {
+    // Create Keyrin
+    const keyring = new Keyring({ type: "sr25519" })
+    // Grab the Alice dev account
+    const alice = keyring.addFromUri("//Alice", { name: "Alice default" })
+    try {
+      // Make the transaction to create the add
+      await apiResp.api.tx.adz
+        .createAd(randomString(5), randomString(50), [
+          [tags[Math.floor(Math.random() * tags.length)]],
+        ])
+        .signAndSend(alice, ({ events = [], status }) => {
+          console.log(status.toHuman())
+        })
+    } catch (err) {
+      console.log("error", err)
+    }
+  }
 
   return (
     <Grid item sm={3} md={2} className={classes.sidebar}>
@@ -103,8 +165,6 @@ const Sidebar = () => {
           <Button className={classes.buttonAdd}>
             <AddCircleOutlineIcon fontSize="small" />
           </Button>
-          <NotifSamples />
-          <NotifSamples showAction={3000} />
         </Typography>
       </Box>
       <Box paddingTop={3} paddingBottom={2.4}>
@@ -155,6 +215,12 @@ const Sidebar = () => {
           </Typography>
         </MenuItem>
       </MenuList>
+      {/* Buttons for testing. TODO: Remove */}
+      <Button onClick={() => generateAds()}>Generate 6 ads & comments</Button>
+      <Button onClick={() => createAd()}>Create 1 ad</Button>
+      <NotifSamples />
+      <NotifSamples showAction={3000} />
+
       <MenuItem classes={{ root: classes.helpGrid }}>
         <ListItemIcon className={classes.menuIcon}>
           <ForumIcon fontSize="small" />
