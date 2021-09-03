@@ -216,7 +216,7 @@ const Sidebar = () => {
         </MenuItem>
       </MenuList>
       {/* Buttons for testing. TODO: Remove */}
-      <Button onClick={() => generateAds()}>Generate 6 ads & comments</Button>
+      <Button onClick={() => generateAds()}>Generate 6 ads (1/5secs)</Button>
       <Button onClick={() => createAd()}>Create 1 ad</Button>
       <NotifSamples />
       <NotifSamples showAction={3000} />
