@@ -12,6 +12,8 @@ type AdType = {
   body: string
   tags: string[]
   created: number
+  num_of_comments: string
+  selected_applicant?: string
   comments?: number
 }
 
@@ -50,6 +52,9 @@ const useStyles = makeStyles({
   },
   author: {
     fontWeight: 600,
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    maxWidth: "250px",
   },
   posted: {
     margin: "0 10px",
@@ -83,6 +88,20 @@ const useStyles = makeStyles({
   },
 })
 
+const options: Intl.DateTimeFormatOptions = {
+  year: "2-digit",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+}
+
+const EpochToDate = (epoch: any) => {
+  if (epoch < 10000000000) epoch *= 1000
+  return new Date(epoch).toLocaleDateString("en-US", options)
+}
+
 const Ad: React.FunctionComponent<Props> = ({
   address,
   ad,
@@ -96,18 +115,8 @@ const Ad: React.FunctionComponent<Props> = ({
   const [formDate, setFormDate] = useState<string>("")
 
   useEffect(() => {
-    const date = new Date(ad.created)
-    setFormDate(
-      date.getDate() +
-        "/" +
-        (date.getMonth() + 1) +
-        "/" +
-        date.getFullYear() +
-        " " +
-        date.getHours() +
-        ":" +
-        date.getMinutes(),
-    )
+    const date = EpochToDate(parseInt(ad.created.toString().replace(/,/g, "")))
+    setFormDate(date)
   }, [ad.created])
 
   return (
@@ -154,7 +163,7 @@ const Ad: React.FunctionComponent<Props> = ({
       <Box display="flex" alignItems="center">
         <ChatBubbleOutlineIcon className={classes.bubble} />
         <Typography variant="body1" className={classes.comments}>
-          {ad.body}
+          {ad.num_of_comments}
         </Typography>
       </Box>
     </Box>
