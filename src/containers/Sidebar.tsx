@@ -7,7 +7,6 @@ import {
   makeStyles,
   Theme,
   Typography,
-  IconButton,
   MenuList,
   MenuItem,
   ListItemIcon,
@@ -18,12 +17,10 @@ import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline"
 import FolderOpenIcon from "@material-ui/icons/FolderOpen"
 import ForumIcon from "@material-ui/icons/Forum"
 
+import { createAd } from "../services"
 import { AppContext } from "../contexts/AppContext"
-import { ApiCreateType } from "../types"
-import useApiCreate from "../hooks/useApiCreate"
 
 // For dummy data
-import { SignerOptions } from "@polkadot/api/types"
 import { Keyring } from "@polkadot/api"
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -124,38 +121,38 @@ const randomString = (length: number): string => {
   return result
 }
 
+const createDummyAd = async () => {
+  // Create Keyrin
+  const keyring = new Keyring({ type: "sr25519" })
+  // Grab the Alice dev account
+  const alice = keyring.addFromUri("//Alice", { name: "Alice default" })
+  try {
+    // Make the transaction to create the add
+    const status = await createAd(
+      randomString(5),
+      randomString(50),
+      [tags[Math.floor(Math.random() * tags.length)]],
+      alice,
+    )
+    console.log(status.toHuman())
+  } catch (err) {
+    console.log("error", err)
+  }
+}
+
+// Generates Dummy ads (1 every 5 seconds)
+const generateDummyAds = () => {
+  let x = 0
+  const intervalID = window.setInterval(() => {
+    createDummyAd()
+    if (++x === 6) window.clearInterval(intervalID)
+  }, 5000)
+}
+
 // DUMMY GENERATOR END
 
 const Sidebar = () => {
   const classes = useStyles()
-  const apiResp: ApiCreateType = useApiCreate()
-
-  // Generates Dummy ads (1 every 5 seconds)
-  const generateAds = () => {
-    let x = 0
-    const intervalID = window.setInterval(() => {
-      createAd()
-      if (++x === 6) window.clearInterval(intervalID)
-    }, 5000)
-  }
-  const createAd = async () => {
-    // Create Keyrin
-    const keyring = new Keyring({ type: "sr25519" })
-    // Grab the Alice dev account
-    const alice = keyring.addFromUri("//Alice", { name: "Alice default" })
-    try {
-      // Make the transaction to create the add
-      await apiResp.api.tx.adz
-        .createAd(randomString(5), randomString(50), [
-          [tags[Math.floor(Math.random() * tags.length)]],
-        ])
-        .signAndSend(alice, ({ events = [], status }) => {
-          console.log(status.toHuman())
-        })
-    } catch (err) {
-      console.log("error", err)
-    }
-  }
 
   return (
     <Grid item sm={3} md={2} className={classes.sidebar}>
@@ -216,8 +213,8 @@ const Sidebar = () => {
         </MenuItem>
       </MenuList>
       {/* Buttons for testing. TODO: Remove */}
-      <Button onClick={() => generateAds()}>Generate 6 ads (1/5secs)</Button>
-      <Button onClick={() => createAd()}>Create 1 ad</Button>
+      <Button onClick={generateDummyAds}>Generate 6 ads (1/5secs)</Button>
+      <Button onClick={createDummyAd}>Create 1 ad</Button>
       <NotifSamples />
       <NotifSamples showAction={3000} />
 

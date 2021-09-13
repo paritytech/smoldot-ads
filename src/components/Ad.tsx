@@ -1,27 +1,16 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 
 import { Box, makeStyles, Chip, Typography } from "@material-ui/core"
 import Identicon from "@polkadot/react-identicon"
 import VisibilityIcon from "@material-ui/icons/Visibility"
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline"
-
-type AdType = {
-  id: number
-  author: string
-  title: string
-  body: string
-  tags: string[]
-  created: number
-  num_of_comments: string
-  selected_applicant?: string
-  comments?: number
-}
+import { useAd } from "../services"
 
 interface Props {
+  id: number
   address: string
-  ad: AdType
-  isClicked: number | null
-  setClicked: React.Dispatch<React.SetStateAction<number | null>>
+  isClicked: boolean
+  onClick: () => void
 }
 
 const useStyles = makeStyles({
@@ -97,76 +86,65 @@ const options: Intl.DateTimeFormatOptions = {
   hour12: false,
 }
 
-const EpochToDate = (epoch: any) => {
-  if (epoch < 10000000000) epoch *= 1000
-  return new Date(epoch).toLocaleDateString("en-US", options)
-}
-
 const Ad: React.FunctionComponent<Props> = ({
+  id,
   address,
-  ad,
   isClicked,
-  setClicked,
+  onClick,
 }: Props) => {
-  const styleProps = isClicked === ad.id
-
-  const classes = useStyles(styleProps)
-
-  const [formDate, setFormDate] = useState<string>("")
-
-  useEffect(() => {
-    const date = EpochToDate(parseInt(ad.created.toString().replace(/,/g, "")))
-    setFormDate(date)
-  }, [ad.created])
+  const classes = useStyles(isClicked)
+  const ad = useAd(id)
 
   return (
-    <Box className={classes.adBox} onClick={() => setClicked(ad.id)}>
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-        className={classes.row}
-      >
-        <Box component="div" display="flex" alignItems="center">
-          <VisibilityIcon className={classes.visibilityIcon} />
-          <h4>{ad.title}</h4>
+    ad && (
+      <Box className={classes.adBox} onClick={onClick}>
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+          className={classes.row}
+        >
+          <Box component="div" display="flex" alignItems="center">
+            <VisibilityIcon className={classes.visibilityIcon} />
+            <h4>{ad.title}</h4>
+          </Box>
+          <Box component="div">
+            {ad.tags.map((tag) => (
+              <Chip key={tag} size="small" label={tag} />
+            ))}
+          </Box>
         </Box>
-        <Box component="div">
-          {ad.tags.map((tag) => (
-            <Chip size="small" label={tag} />
-          ))}
+        <Box display="flex" alignItems="center" className={classes.row}>
+          <Identicon
+            className={classes.identIcon}
+            size={18}
+            theme="polkadot"
+            value={address}
+            onCopy={() => {
+              console.log("copy")
+            }}
+          />
+          <Typography variant="body2" className={classes.author}>
+            {ad.author}
+          </Typography>
+          <Typography className={classes.posted}>posted at</Typography>
+          <Typography variant="body2" className={classes.date}>
+            {ad.created.toLocaleString("en-US", options)}
+          </Typography>
+        </Box>
+        <Box display="flex" alignItems="center" className={classes.row}>
+          <Typography variant="body1" className={classes.body}>
+            {ad.body}
+          </Typography>
+        </Box>
+        <Box display="flex" alignItems="center">
+          <ChatBubbleOutlineIcon className={classes.bubble} />
+          <Typography variant="body1" className={classes.comments}>
+            {ad.numOfComments}
+          </Typography>
         </Box>
       </Box>
-      <Box display="flex" alignItems="center" className={classes.row}>
-        <Identicon
-          className={classes.identIcon}
-          size={18}
-          theme="polkadot"
-          value={address}
-          onCopy={() => {
-            console.log("copy")
-          }}
-        />
-        <Typography variant="body2" className={classes.author}>
-          {ad.author}
-        </Typography>
-        <Typography className={classes.posted}>posted at</Typography>
-        <Typography variant="body2" className={classes.date}>
-          {formDate}
-        </Typography>
-      </Box>
-      <Box display="flex" alignItems="center" className={classes.row}>
-        <Typography variant="body1" className={classes.body}>
-          {ad.body}
-        </Typography>
-      </Box>
-      <Box display="flex" alignItems="center">
-        <ChatBubbleOutlineIcon className={classes.bubble} />
-        <Typography variant="body1" className={classes.comments}>
-          {ad.num_of_comments}
-        </Typography>
-      </Box>
-    </Box>
+    )
   )
 }
 
