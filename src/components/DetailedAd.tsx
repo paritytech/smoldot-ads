@@ -1,26 +1,11 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 
 import { Box, makeStyles, Chip, Typography } from "@material-ui/core"
 import Identicon from "@polkadot/react-identicon"
 import VisibilityIcon from "@material-ui/icons/Visibility"
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline"
 import ClearIcon from "@material-ui/icons/Clear"
-
-type AdType = {
-  id: number
-  author: string
-  title: string
-  body: string
-  tags: string[]
-  created: number
-  comments?: number
-}
-
-interface Props {
-  address: string
-  ad: AdType
-  setClicked: React.Dispatch<React.SetStateAction<number | null>>
-}
+import { useAd } from "../services"
 
 const useStyles = makeStyles((theme) => ({
   row: {
@@ -78,82 +63,80 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const options: Intl.DateTimeFormatOptions = {
+  year: "2-digit",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+}
+
+interface Props {
+  address: string
+  id: number
+  onClick: () => void
+}
+
 const DetailedAd: React.FunctionComponent<Props> = ({
   address,
-  ad,
-  setClicked,
-}: Props) => {
+  id,
+  onClick,
+}) => {
   const classes = useStyles()
-
-  const [formDate, setFormDate] = useState<string>("")
-
-  useEffect(() => {
-    const date = new Date(ad.created)
-    setFormDate(
-      date.getDate() +
-        "/" +
-        (date.getMonth() + 1) +
-        "/" +
-        date.getFullYear() +
-        " " +
-        date.getHours() +
-        ":" +
-        date.getMinutes(),
-    )
-  }, [ad.created])
+  const ad = useAd(id)
 
   return (
-    <Box className={classes.adBox}>
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-        className={classes.row}
-      >
-        <Box component="div" display="flex" alignItems="center">
-          <VisibilityIcon className={classes.visibilityIcon} />
-          <h4>{ad.title}</h4>
+    ad && (
+      <Box className={classes.adBox}>
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+          className={classes.row}
+        >
+          <Box component="div" display="flex" alignItems="center">
+            <VisibilityIcon className={classes.visibilityIcon} />
+            <h4>{ad.title}</h4>
+          </Box>
+          <Box component="div" display="flex" alignItems="center">
+            {ad.tags.map((tag) => (
+              <Chip key={tag} size="small" label={tag} />
+            ))}
+            <ClearIcon className={classes.clearIcon} onClick={onClick} />
+          </Box>
         </Box>
-        <Box component="div" display="flex" alignItems="center">
-          {ad.tags.map((tag) => (
-            <Chip size="small" label={tag} />
-          ))}
-          <ClearIcon
-            className={classes.clearIcon}
-            onClick={() => setClicked(null)}
+        <Box display="flex" alignItems="center" className={classes.row}>
+          <Identicon
+            className={classes.identIcon}
+            size={18}
+            theme="polkadot"
+            value={address}
+            onCopy={() => {
+              console.log("copy")
+            }}
           />
+          <Typography variant="body2" className={classes.author}>
+            {ad.author}
+          </Typography>
+          <Typography className={classes.posted}>posted at</Typography>
+          <Typography variant="body2" className={classes.date}>
+            {ad.created.toLocaleString("en-US", options)}
+          </Typography>
+        </Box>
+        <Box display="flex" alignItems="center" className={classes.row}>
+          <Typography variant="body1" className={classes.body}>
+            {ad.body}
+          </Typography>
+        </Box>
+        <Box display="flex" alignItems="center">
+          <ChatBubbleOutlineIcon className={classes.bubble} />
+          <Typography variant="body1" className={classes.comments}>
+            8
+          </Typography>
         </Box>
       </Box>
-      <Box display="flex" alignItems="center" className={classes.row}>
-        <Identicon
-          className={classes.identIcon}
-          size={18}
-          theme="polkadot"
-          value={address}
-          onCopy={() => {
-            console.log("copy")
-          }}
-        />
-        <Typography variant="body2" className={classes.author}>
-          {ad.author}
-        </Typography>
-        <Typography className={classes.posted}>posted at</Typography>
-        <Typography variant="body2" className={classes.date}>
-          {formDate}
-        </Typography>
-      </Box>
-      <Box display="flex" alignItems="center" className={classes.row}>
-        <Typography variant="body1" className={classes.body}>
-          {ad.body}
-        </Typography>
-      </Box>
-      <Box display="flex" alignItems="center">
-        <ChatBubbleOutlineIcon className={classes.bubble} />
-        <Typography variant="body1" className={classes.comments}>
-          8
-        </Typography>
-      </Box>
-    </Box>
+    )
   )
 }
 
