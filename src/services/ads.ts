@@ -1,10 +1,20 @@
 import type { IKeyringPair } from "@polkadot/types/types"
 import { bind } from "@react-rxjs/core"
 import { firstValueFrom } from "rxjs"
-import { observeApi, withAPI } from "./client"
+import { observeApi, withAPI, RawData } from "./client"
 import { epochToDate, persistLocally } from "./utils"
 
-export interface Add {
+interface RawAdd {
+  author: string
+  body: string
+  created: string
+  num_of_comments: string
+  selected_applicant: null
+  tags: Array<string>
+  title: string
+}
+
+export interface Ad {
   id: number
   author: string
   title: string
@@ -31,32 +41,30 @@ export const [useAddsAmount] = bind(
   0,
 )
 
-export const [useAd, add$] = bind((addId: number) =>
-  observeApi<Add | null>((api, next) =>
-    (api.query.adz.ads as any)(addId, (rawAdd: string | undefined) => {
+export const [useAd, add$] = bind((adId: number) =>
+  observeApi<Ad | null>((api, next) =>
+    (api.query.adz.ads as any)(adId, (rawAdd: RawData<RawAdd> | undefined) => {
       if (rawAdd === undefined) {
         next(null)
         return
       }
 
-      const parsedAdd = JSON.parse(rawAdd.toString())
+      const parsedAdd = rawAdd.toHuman()
       const numOfComments = Number(parsedAdd.num_of_comments)
       const created = epochToDate(parsedAdd.created)
-      const add = { ...parsedAdd, numOfComments, created } as Add
+      const ad: Ad = { ...parsedAdd, id: adId, numOfComments, created }
 
-      next(add)
+      next(ad)
     }),
-  ).pipe(persistLocally(`add-${addId}`)),
+  ).pipe(persistLocally(`add-${adId}`)),
 )
-
-interface RawData {
-  toHuman: () => Comment
-}
 
 export const [useComment] = bind((addId: number, commentId: number) =>
   observeApi<Comment>((api, next) =>
-    (api.query.adz.comments as any)(addId, commentId, (rawComment: RawData) =>
-      next(rawComment.toHuman()),
+    (api.query.adz.comments as any)(
+      addId,
+      commentId,
+      (rawComment: RawData<Comment>) => next(rawComment.toHuman()),
     ),
   ).pipe(persistLocally(`comment-${addId}-${commentId}`)),
 )
