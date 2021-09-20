@@ -1,5 +1,6 @@
 import type { IKeyringPair } from "@polkadot/types/types"
 import { bind } from "@react-rxjs/core"
+import { firstValueFrom } from "rxjs"
 import { observeApi, withAPI } from "./client"
 import { epochToDate, persistLocally } from "./utils"
 
@@ -66,15 +67,21 @@ export const createAd = (
   tags: string[],
   author: IKeyringPair,
 ) =>
-  withAPI(
-    (api) =>
-      (api.tx.adz as any)
-        .createAd(title, content, tags)
-        .signAndSend(author) as Promise<RawData>,
-  ).toPromise()
+  firstValueFrom(
+    withAPI(
+      (api) =>
+        (api.tx.adz as any)
+          .createAd(title, content, tags)
+          .signAndSend(author) as Promise<RawData>,
+    ),
+  )
 
 export const deleteAd = (id: number, author: IKeyringPair) =>
-  withAPI(
-    (api) =>
-      (api.tx.adz as any).deleteAd(id).signAndSend(author) as Promise<RawData>,
-  ).toPromise()
+  firstValueFrom(
+    withAPI(
+      (api) =>
+        (api.tx.adz as any)
+          .deleteAd(id)
+          .signAndSend(author) as Promise<RawData>,
+    ),
+  )
