@@ -39,3 +39,7 @@ export const observeApi = <T>(
   callback: (api: ApiPromise, next: (value: T) => void) => Promise<() => void>,
 ): Observable<T> =>
   withAPI((api) => observableFromPolka((cb) => callback(api, cb)))
+
+export interface RawData<T = unknown> {
+  toHuman: () => T
+}

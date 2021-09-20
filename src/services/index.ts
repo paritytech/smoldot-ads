@@ -1,2 +1,2 @@
 export { changeProvider, useIsApiReady } from "./client"
-export * from "./adds"
+export * from "./ads"
