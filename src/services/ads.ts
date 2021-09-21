@@ -24,14 +24,6 @@ export interface Ad {
   numOfComments: number
 }
 
-export interface Comment {
-  id: number
-  author: string
-  title: string
-  body: string
-  created: Date
-}
-
 export const [useAddsAmount] = bind(
   observeApi<number>((api, cb) =>
     (api.query.adz.numOfAds as any)((rawData: { toString: () => string }) =>
@@ -57,16 +49,6 @@ export const [useAd, add$] = bind((adId: number) =>
       next(ad)
     }),
   ).pipe(persistLocally(`add-${adId}`)),
-)
-
-export const [useComment] = bind((addId: number, commentId: number) =>
-  observeApi<Comment>((api, next) =>
-    (api.query.adz.comments as any)(
-      addId,
-      commentId,
-      (rawComment: RawData<Comment>) => next(rawComment.toHuman()),
-    ),
-  ).pipe(persistLocally(`comment-${addId}-${commentId}`)),
 )
 
 export const createAd = (
