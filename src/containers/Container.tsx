@@ -5,7 +5,7 @@ import { createStyles, Grid, makeStyles } from "@material-ui/core"
 import Ad from "../components/Ad"
 import SearchBar from "../components/SearchBar"
 import DetailedAd from "../components/DetailedAd"
-import { useAddsAmount } from "../services"
+import { useAdsAmount } from "../services"
 const useStyles = makeStyles(() =>
   createStyles({
     main: {
@@ -23,13 +23,13 @@ const Container = () => {
   const classes = useStyles()
   const [selectedId, setSelectedId] = useState<number | null>(null)
 
-  const nAdds = useAddsAmount()
+  const nAds = useAdsAmount()
   const sortedAddIds = useMemo(
     () =>
-      Array(nAdds)
+      Array(nAds)
         .fill(null)
-        .map((_, idx) => nAdds - idx - 1),
-    [nAdds],
+        .map((_, idx) => nAds - idx - 1),
+    [nAds],
   )
 
   return (
