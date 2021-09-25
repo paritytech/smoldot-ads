@@ -1,7 +1,7 @@
 import { Observable } from "rxjs"
 
 const VERSION_KEY = "@smoldot-ads/schema-version"
-const CURRENT_VERSION = 1
+const CURRENT_VERSION = 2
 
 if (typeof window !== "undefined") {
   const version = Number(window.localStorage.getItem(VERSION_KEY))
