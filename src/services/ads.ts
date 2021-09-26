@@ -1,4 +1,3 @@
-import { KeyringPair } from "@polkadot/keyring/types"
 import { bind } from "@react-rxjs/core"
 import { map } from "rxjs"
 import { adzMutation, adzQuery } from "./client"
@@ -36,12 +35,7 @@ export const [useAd] = bind((adIdx: number) =>
   ),
 )
 
-export const createAd = (
-  title: string,
-  content: string,
-  tags: string[],
-  author: KeyringPair,
-) => adzMutation("createAd", author, title, content, tags)
+export const createAd = (title: string, content: string, tags: string[]) =>
+  adzMutation("createAd", title, content, tags)
 
-export const deleteAd = (adIdx: number, author: KeyringPair) =>
-  adzMutation("deleteAd", author, adIdx)
+export const deleteAd = (adIdx: number) => adzMutation("deleteAd", adIdx)

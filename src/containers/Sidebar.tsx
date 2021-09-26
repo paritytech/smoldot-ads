@@ -20,9 +20,6 @@ import ForumIcon from "@material-ui/icons/Forum"
 import { createAd } from "../services"
 import { AppContext } from "../contexts/AppContext"
 
-// For dummy data
-import { Keyring } from "@polkadot/api"
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     menuItemRoot: {
@@ -122,18 +119,11 @@ const randomString = (length: number): string => {
 }
 
 const createDummyAd = async () => {
-  // Create Keyrin
-  const keyring = new Keyring({ type: "sr25519" })
-  // Grab the Alice dev account
-  const alice = keyring.addFromUri("//Alice", { name: "Alice default" })
   try {
     // Make the transaction to create the add
-    const status = await createAd(
-      randomString(5),
-      randomString(50),
-      [tags[Math.floor(Math.random() * tags.length)]],
-      alice,
-    )
+    const status = await createAd(randomString(5), randomString(50), [
+      tags[Math.floor(Math.random() * tags.length)],
+    ])
     console.log(status.toHuman())
   } catch (err) {
     console.log("error", err)

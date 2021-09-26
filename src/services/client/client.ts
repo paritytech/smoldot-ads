@@ -1,5 +1,5 @@
 import { firstValueFrom, Observable } from "rxjs"
-import { startWith, switchMap, mapTo } from "rxjs/operators"
+import { startWith, switchMap, mapTo, withLatestFrom } from "rxjs/operators"
 import { createSignal } from "@react-rxjs/utils"
 import { bind, shareLatest } from "@react-rxjs/core"
 import { ApiPromise, WsProvider } from "@polkadot/api"
@@ -12,7 +12,7 @@ import {
   PolkaQueryFunction,
 } from "./Adz"
 import { ExcludeLast, observableFromPolka, OnlyLast } from "../utils"
-import { KeyringPair } from "@polkadot/keyring/types"
+import { activeAccount$ } from "../accounts"
 
 const { types } = definitions
 const DEFAULT_PROVIDER = "ws://127.0.0.1:9944"
@@ -41,12 +41,12 @@ type MutationReturn<T extends PolkaMutation<any[], any>> =
 
 export const adzMutation = <K extends keyof AdzMutations>(
   key: K,
-  author: KeyringPair,
   ...args: MutationArgs<AdzMutations[K]>
 ): Promise<MutationReturn<AdzMutations[K]>> =>
   firstValueFrom(
     api$.pipe(
-      switchMap((api) =>
+      withLatestFrom(activeAccount$),
+      switchMap(([api, author]) =>
         (
           api.tx.adz[key] as unknown as PolkaMutation<
             MutationArgs<AdzMutations[K]>,
