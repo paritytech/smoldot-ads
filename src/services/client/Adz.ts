@@ -46,6 +46,9 @@ export interface RawComment {
 export interface AdzMutations {
   createAd: PolkaMutation<[title: string, content: string, tags: string[]]>
   deleteAd: PolkaMutation<[idx: number]>
+  updateAd: PolkaMutation<
+    [adIdx: number, title: string, content: string, tags: string[]]
+  >
   createComment: PolkaMutation<[body: string, adIdx: number]>
   deleteComment: PolkaMutation<[adIdx: number, commentIdx: number]>
 }
@@ -57,6 +60,7 @@ export interface AdzQueries {
     [adIdx: number, commentIdx: number],
     [RawData<RawComment>]
   >
+  tags: PolkaQueryFunction<[], [RawData<Map<string, Set<number>>>]>
 }
 
 export type AdzApi = ApiPromise & {
