@@ -13,7 +13,7 @@ export interface Ad {
   numOfComments: number
 }
 
-export const [useAdsAmount] = bind(
+export const [useAdsAmount, adsAmount$] = bind(
   adzQuery("numOfAds").pipe(
     map((rawData) => Number(rawData.toString())),
     persistLocally("adsAmount"),
@@ -21,7 +21,7 @@ export const [useAdsAmount] = bind(
   0,
 )
 
-export const [useAd] = bind((adIdx: number) =>
+export const [useAd, ad$] = bind((adIdx: number) =>
   adzQuery("ads", adIdx).pipe(
     map((rawAd): Ad | null => {
       const parsedAd = rawAd.toHuman()
@@ -39,3 +39,10 @@ export const createAd = (title: string, content: string, tags: string[]) =>
   adzMutation("createAd", title, content, tags)
 
 export const deleteAd = (adIdx: number) => adzMutation("deleteAd", adIdx)
+
+export const updateAd = (
+  adIdx: number,
+  title: string,
+  content: string,
+  tags: string[],
+) => adzMutation("updateAd", adIdx, title, content, tags)
