@@ -63,7 +63,17 @@ export interface AdzQueries {
   tags: PolkaQueryFunction<[], [RawData<Map<string, Set<number>>>]>
 }
 
+export interface SystemQueries {
+  account: PolkaQueryFunction<
+    [address: string],
+    [{ data: { free: RawData<number> } }]
+  >
+}
+
 export type AdzApi = ApiPromise & {
   tx: ApiPromise["tx"] & { adz: AdzMutations }
-  query: ApiPromise["query"] & { adz: AdzQueries }
+  query: ApiPromise["query"] & {
+    system: SystemQueries
+    adz: AdzQueries
+  }
 }

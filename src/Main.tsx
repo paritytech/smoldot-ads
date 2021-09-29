@@ -6,12 +6,14 @@ import Sidebar from "./containers/Sidebar"
 import Container from "./containers/Container"
 
 import Notification from "./components/Notification"
+import { Header } from "./containers/Header"
 
 const Main = () => {
   const appliedTheme = createTheme(AdsLight)
   return (
     <ThemeProvider theme={appliedTheme}>
       <Notification>
+        <Header />
         <Grid container>
           <Sidebar />
           <Container />
