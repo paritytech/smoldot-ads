@@ -10,6 +10,7 @@ import {
   AdzQueries,
   PolkaMutation,
   PolkaQueryFunction,
+  SystemQueries,
 } from "./Adz"
 import { ExcludeLast, observableFromPolka, OnlyLast } from "../utils"
 import { activeAccount$ } from "../accounts"
@@ -31,6 +32,10 @@ const api$ = providerChange$.pipe(
   ),
   shareLatest(),
 )
+
+api$.subscribe((api) => {
+  api.rpc.system.health((x: Health) => {})
+})
 
 export const [useIsApiReady] = bind(api$.pipe(mapTo(true)), false)
 
@@ -79,6 +84,20 @@ export const adzQuery = <K extends keyof AdzQueries>(
     switchMap((api) =>
       observableFromPolka<QueryReturn<AdzQueries[K]>>((next) =>
         api.query.adz[query](...(args as any[]), ((...res: any) => {
+          next(res.length === 1 ? res[0] : res)
+        }) as any),
+      ),
+    ),
+  )
+
+export const systemQuery = <K extends keyof SystemQueries>(
+  query: K,
+  ...args: QueryArgs<SystemQueries[K]>
+): Observable<QueryReturn<SystemQueries[K]>> =>
+  api$.pipe(
+    switchMap((api) =>
+      observableFromPolka<QueryReturn<SystemQueries[K]>>((next) =>
+        (api.query.system[query] as any)(...(args as any[]), ((...res: any) => {
           next(res.length === 1 ? res[0] : res)
         }) as any),
       ),
