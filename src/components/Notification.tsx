@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
-import { NotificationProps } from "../types"
+import { AppProps, NotificationProps } from "../types"
 import {
   Button,
   IconButton,
@@ -128,8 +128,18 @@ const Notification: React.FC = ({ children }) => {
   const [notification, setNotification] = useState<NotificationProps>({
     text: "",
   })
+
+  const [showCreatedAdd, setShowCreatedAdd] = useState<boolean>(false)
+
   return (
-    <AppContext.Provider value={{ notification, setNotification }}>
+    <AppContext.Provider
+      value={{
+        notification,
+        setNotification,
+        showCreatedAdd,
+        setShowCreatedAdd,
+      }}
+    >
       <NotificationBase {...notification} />
       {children}
     </AppContext.Provider>

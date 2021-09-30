@@ -1,4 +1,3 @@
-import { ApiPromise } from "@polkadot/api"
 import { MouseEventHandler } from "react"
 
 export interface NotificationProps {
@@ -10,7 +9,6 @@ export interface NotificationProps {
   autoClose?: number
 }
 
-export type ApiCreateType = {
-  api: ApiPromise
-  apiIsReady: boolean
+export interface AppProps {
+  show?: boolean
 }

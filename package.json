@@ -46,7 +46,6 @@
     "@polkadot/util": "^7.3.1",
     "@react-rxjs/core": "^0.8.3",
     "@react-rxjs/utils": "^0.9.2",
-    "@substrate/connect": "^0.3.18",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-transition-group": "^4.4.2",
