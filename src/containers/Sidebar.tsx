@@ -11,7 +11,7 @@ import {
   MenuItem,
   ListItemIcon,
 } from "@material-ui/core"
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline"
+import { useIsApiReady } from "../services/client"
 import AssignmentOutlinedIcon from "@material-ui/icons/AssignmentOutlined"
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline"
 import FolderOpenIcon from "@material-ui/icons/FolderOpen"
@@ -19,6 +19,8 @@ import ForumIcon from "@material-ui/icons/Forum"
 
 import { createAd } from "../services"
 import { AppContext } from "../contexts/AppContext"
+
+import StatusCircle from "../components/StatusCircle"
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,13 +51,21 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     buttonAdd: {
-      backgroundColor: "#F5EFF6",
+      backgroundColor: "#F5EFF7",
       color: "#334048",
       marginLeft: "8px",
-      borderRadius: "10px",
+      borderRadius: "5px",
+      width: "100%",
+      margin: "50px 0",
+      fontSize: "16px",
+      fontWeight: 600,
     },
     links: {
       marginLeft: "15px",
+    },
+    feedLink: {
+      marginLeft: "15px",
+      margin: "35px 0",
     },
     linksNotification: {
       color: theme.palette.text.primary,
@@ -138,24 +148,19 @@ const generateDummyAds = () => {
     if (++x === 6) window.clearInterval(intervalID)
   }, 5000)
 }
-
 // DUMMY GENERATOR END
 
 const Sidebar = () => {
   const classes = useStyles()
+  const isApiReady = useIsApiReady()
+  const appCtx = useContext(AppContext)
 
   return (
     <Grid item sm={3} md={2} className={classes.sidebar}>
       <Box paddingTop={2} paddingBottom={2}>
         <Typography variant="h4">
-          Smold Ads
-          <Button className={classes.buttonAdd}>
-            <AddCircleOutlineIcon fontSize="small" />
-          </Button>
+          <StatusCircle connected={isApiReady} /> Smold Ads
         </Typography>
-      </Box>
-      <Box paddingTop={3} paddingBottom={2.4}>
-        <Typography variant="overline">My local storage</Typography>
       </Box>
       <MenuList>
         <MenuItem
@@ -168,7 +173,25 @@ const Sidebar = () => {
             <AssignmentOutlinedIcon fontSize="small" />
           </ListItemIcon>
           <Typography variant="body1" className={classes.links}>
-            Ads
+            Feed
+          </Typography>
+        </MenuItem>
+      </MenuList>
+      <Box paddingTop={3} paddingBottom={2.4}>
+        <Typography variant="overline">Local storage</Typography>
+      </Box>
+      <MenuList>
+        <MenuItem
+          classes={{
+            root: classes.menuItemRoot,
+            selected: classes.menuItemSelected,
+          }}
+        >
+          <ListItemIcon className={classes.menuIcon}>
+            <AssignmentOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <Typography variant="body1" className={classes.links}>
+            My ads
           </Typography>
           <Typography variant="body1" className={classes.linksNotification}>
             (2)
@@ -185,7 +208,10 @@ const Sidebar = () => {
             <ChatBubbleOutlineIcon fontSize="small" />
           </ListItemIcon>
           <Typography variant="body1" className={classes.links}>
-            Responses
+            My comments
+          </Typography>
+          <Typography variant="body1" className={classes.linksNotification}>
+            (2)
           </Typography>
         </MenuItem>
         <MenuItem
@@ -198,10 +224,18 @@ const Sidebar = () => {
             <FolderOpenIcon fontSize="small" />
           </ListItemIcon>
           <Typography variant="body1" className={classes.links}>
-            Agreements
+            My agreements
           </Typography>
         </MenuItem>
       </MenuList>
+      <Button
+        className={classes.buttonAdd}
+        onClick={() => {
+          appCtx.setShowCreatedAdd(true)
+        }}
+      >
+        New ad
+      </Button>
       {/* Buttons for testing. TODO: Remove */}
       <Button onClick={generateDummyAds}>Generate 6 ads (1/5secs)</Button>
       <Button onClick={createDummyAd}>Create 1 ad</Button>
