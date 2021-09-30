@@ -16,12 +16,9 @@ export const CurrentUser: React.FC = () => {
   const balance = useAccountBalance()
   return (
     <div>
-      <select onChange={onChange}>
+      <select onChange={onChange} value={activeAccount.address}>
         {Object.values(accounts).map((account) => (
-          <option
-            selected={account.address === activeAccount.address}
-            value={account.address}
-          >
+          <option key={account.address} value={account.address}>
             {(account.meta as any).name}
           </option>
         ))}

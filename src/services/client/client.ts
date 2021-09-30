@@ -33,10 +33,6 @@ const api$ = providerChange$.pipe(
   shareLatest(),
 )
 
-api$.subscribe((api) => {
-  api.rpc.system.health((x: Health) => {})
-})
-
 export const [useIsApiReady] = bind(api$.pipe(mapTo(true)), false)
 
 type MutationArgs<T extends PolkaMutation<any[], any>> =
