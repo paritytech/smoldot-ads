@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { useContext, useMemo, useState } from "react"
 import { Subscribe } from "@react-rxjs/core"
 import { createStyles, Grid, makeStyles } from "@material-ui/core"
 
@@ -6,6 +6,9 @@ import Ad from "../components/Ad"
 import SearchBar from "../components/SearchBar"
 import DetailedAd from "../components/DetailedAd"
 import { useAdsAmount } from "../services"
+import { AppContext } from "../contexts/AppContext"
+import CreateAd from "../components/CreateAd"
+
 const useStyles = makeStyles(() =>
   createStyles({
     main: {
@@ -13,7 +16,7 @@ const useStyles = makeStyles(() =>
       overflow: "hidden",
     },
     adsContainer: {
-      overflowY: "scroll",
+      overflowY: "auto",
       height: "90vh",
     },
   }),
@@ -21,6 +24,7 @@ const useStyles = makeStyles(() =>
 
 const Container = () => {
   const classes = useStyles()
+  const appCtx = useContext(AppContext)
   const [selectedId, setSelectedId] = useState<number | null>(null)
 
   const nAds = useAdsAmount()
@@ -35,6 +39,7 @@ const Container = () => {
   return (
     <Grid item container className={classes.main} sm={9} md={10}>
       <Grid item xs={9}>
+        {appCtx.showCreatedAdd && <CreateAd />}
         <SearchBar />
       </Grid>
       <Grid item container xs={12} spacing={4}>
