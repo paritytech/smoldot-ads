@@ -1,13 +1,30 @@
 import React, { useContext, useState } from "react"
 
 import ClearIcon from "@material-ui/icons/Clear"
-import { Box, Chip, Input, makeStyles, Typography } from "@material-ui/core"
-import { AppContext } from "../contexts/AppContext"
+import {
+  Box,
+  Button,
+  Input,
+  makeStyles,
+  TextField,
+  Typography,
+} from "@material-ui/core"
+import { AppContext } from "../../contexts/AppContext"
 import Identicon from "@polkadot/react-identicon"
+import { Tags } from "./Tags"
+import { isEmptyText } from "../../utils"
+import {
+  useActiveAccount,
+  useAccountBalance,
+} from ".././../../src/services/accounts"
+import { createAd } from "../../../src/services"
 
 const useStyles = makeStyles({
   row: {
     marginBottom: "12.5px",
+  },
+  descriptionText: {
+    width: "100%",
   },
   spaceAround: {
     position: "absolute",
@@ -59,22 +76,47 @@ const useStyles = makeStyles({
   },
 })
 
-const options: Intl.DateTimeFormatOptions = {
-  year: "2-digit",
-  month: "2-digit",
-  day: "2-digit",
-  hour: "2-digit",
-  minute: "2-digit",
-  hour12: false,
+const UserRow: React.FC = () => {
+  const classes = useStyles()
+  const activeAccount = useActiveAccount()
+  const balance = useAccountBalance()
+
+  const name = activeAccount.meta.name as string
+
+  return (
+    <Box
+      display="flex"
+      alignItems="center"
+      justifyContent="space-between"
+      className={classes.row}
+    >
+      <Box display="flex" alignItems="center" className={classes.row}>
+        <Identicon
+          className={classes.identIcon}
+          size={22}
+          theme="polkadot"
+          value={"5DTestUPts3kjeXSTMyerHihn1uwMfLj8vU8sqF7qYrFabHE"}
+          onCopy={() => {
+            console.log("copy")
+          }}
+        />
+        <Typography variant="body2" style={{ fontSize: "20px" }}>
+          {name}
+        </Typography>
+      </Box>
+      <Typography variant="body2" className={classes.balance}>
+        {balance}
+      </Typography>
+    </Box>
+  )
 }
 
 const CreateAd: React.FunctionComponent = () => {
   const appCtx = useContext(AppContext)
   const classes = useStyles()
   const [title, setTitle] = useState<string>("")
+  const [description, setDescription] = useState<string>("")
   const [selectedTags, setSelectedTags] = useState<string[]>([])
-
-  const tempTags = ["cow", "bird", "bat", "man", "monkey"]
 
   return (
     <Box className={classes.spaceAround}>
@@ -110,64 +152,42 @@ const CreateAd: React.FunctionComponent = () => {
             />
           </Box>
         </Box>
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="left"
-          className={classes.row}
-          style={{ paddingBottom: "25px" }}
+        <Tags
+          tags={selectedTags}
+          onAddTag={(newTag) =>
+            setSelectedTags((prevTags) =>
+              prevTags.includes(newTag) ? prevTags : prevTags.concat(newTag),
+            )
+          }
+          onRemoveTag={(removedTag) =>
+            setSelectedTags((prevTags) =>
+              prevTags.filter((tag) => tag !== removedTag),
+            )
+          }
+        />
+        <UserRow />
+        <TextField
+          className={classes.descriptionText}
+          rows={5}
+          maxRows={5}
+          variant="outlined"
+          multiline
+          value={description}
+          onChange={(e) => {
+            setDescription(e.target.value)
+          }}
+        />
+        <Button
+          disabled={
+            selectedTags.length === 0 || [title, description].some(isEmptyText)
+          }
+          onClick={() => {
+            createAd(title, description, selectedTags)
+            appCtx.setShowCreatedAdd(false)
+          }}
         >
-          {tempTags.map((tag) => (
-            <Chip
-              key={tag}
-              onClick={(e) => {
-                selectedTags.includes(tag)
-                  ? setSelectedTags(selectedTags.filter((t) => t !== tag))
-                  : setSelectedTags([...selectedTags, tag])
-              }}
-              style={{ marginRight: "5px" }}
-              className={
-                selectedTags.includes(tag)
-                  ? classes.selectedTag
-                  : classes.emptyTag
-              }
-              size="small"
-              label={tag}
-            />
-          ))}
-        </Box>
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          className={classes.row}
-        >
-          <Box display="flex" alignItems="center" className={classes.row}>
-            <Identicon
-              className={classes.identIcon}
-              size={22}
-              theme="polkadot"
-              value={"5DTestUPts3kjeXSTMyerHihn1uwMfLj8vU8sqF7qYrFabHE"}
-              onCopy={() => {
-                console.log("copy")
-              }}
-            />
-            <Typography variant="body2" style={{ fontSize: "20px" }}>
-              Alice
-            </Typography>
-          </Box>
-          <Typography variant="body2" className={classes.balance}>
-            10.99 TOK
-          </Typography>
-        </Box>
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-          className={classes.row}
-        >
-          Line 3
-        </Box>
+          Post
+        </Button>
       </Box>
     </Box>
   )

@@ -1,6 +1,6 @@
 import { bind, shareLatest } from "@react-rxjs/core"
 import { combineKeys } from "@react-rxjs/utils"
-import { distinctUntilChanged, filter, map, pipe, scan } from "rxjs"
+import { distinctUntilChanged, filter, map, pipe, scan, startWith } from "rxjs"
 import { ad$, adsAmount$ } from "./ads"
 
 // TEMPORARY CODE STARTS
@@ -82,6 +82,7 @@ const tags$ = combineKeys(adIds$, adTagsDeltas$).pipe(
 
     return result
   }, new Map<string, Set<number>>()),
+  startWith(new Map()),
   shareLatest(),
 )
 
