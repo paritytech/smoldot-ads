@@ -2,8 +2,9 @@ import React, { useContext, useState } from "react"
 
 import ClearIcon from "@material-ui/icons/Clear"
 import { Box, Chip, Input, makeStyles, Typography } from "@material-ui/core"
-import { AppContext } from "../contexts/AppContext"
+import { AppContext } from "../../contexts/AppContext"
 import Identicon from "@polkadot/react-identicon"
+import Tags from "./Tags"
 
 const useStyles = makeStyles({
   row: {
@@ -110,32 +111,7 @@ const CreateAd: React.FunctionComponent = () => {
             />
           </Box>
         </Box>
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="left"
-          className={classes.row}
-          style={{ paddingBottom: "25px" }}
-        >
-          {tempTags.map((tag) => (
-            <Chip
-              key={tag}
-              onClick={(e) => {
-                selectedTags.includes(tag)
-                  ? setSelectedTags(selectedTags.filter((t) => t !== tag))
-                  : setSelectedTags([...selectedTags, tag])
-              }}
-              style={{ marginRight: "5px" }}
-              className={
-                selectedTags.includes(tag)
-                  ? classes.selectedTag
-                  : classes.emptyTag
-              }
-              size="small"
-              label={tag}
-            />
-          ))}
-        </Box>
+        <Tags />
         <Box
           display="flex"
           alignItems="center"

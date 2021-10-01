@@ -39,6 +39,7 @@
   "dependencies": {
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "*",
     "@material-ui/styles": "^4.11.4",
     "@polkadot/api": "^5.7.1",
     "@polkadot/keyring": "^7.3.1",
