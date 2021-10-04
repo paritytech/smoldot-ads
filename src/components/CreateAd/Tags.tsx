@@ -1,54 +1,14 @@
 import React, { useEffect, useRef, useState } from "react"
 import TextField from "@material-ui/core/TextField"
 import Autocomplete, {
-  AutocompleteCloseReason,
   createFilterOptions,
 } from "@material-ui/lab/Autocomplete"
-import { Box, Chip, Input, makeStyles, Typography } from "@material-ui/core"
-import AddIcon from "@material-ui/icons/AddCircleOutlineOutlined"
-
-const filter = createFilterOptions<{ title: string; inputValue?: string }>()
-
-const options = ["pizza", "CV", "jobs", "announcement"].map((title, id) => ({
-  title,
-  inputValue: "",
-  id,
-}))
+import { Box, Chip, makeStyles } from "@material-ui/core"
+import { useTopTags } from "../../../src/services"
 
 const useStyles = makeStyles({
   row: {
     marginBottom: "12.5px",
-  },
-  spaceAround: {
-    position: "absolute",
-    width: "81vw",
-    zIndex: 100,
-    padding: "15vw 15vw",
-    height: "100vh",
-    backdropFilter: "blur(3px)",
-  },
-  identIcon: {
-    marginRight: "10px",
-    border: "0.5px solid #ccc",
-    borderRadius: "10px",
-  },
-  title: {
-    width: "100%",
-  },
-  adBox: {
-    margin: "10px",
-    borderRadius: "4px",
-    padding: "20px 15px",
-    border: "1px solid #abb8bf",
-    backgroundColor: "#fff",
-  },
-  clearIcon: {
-    cursor: "pointer",
-  },
-  textfield: {
-    color: "#334048",
-    padding: "4.5px 8px 3.5px 0",
-    fontSize: "18px",
   },
   emptyTag: {
     cursor: "pointer",
@@ -62,15 +22,13 @@ const useStyles = makeStyles({
     backgroundColor: "#EAEEF1",
     border: "1px solid #EAEEF1",
   },
-  balance: {
-    fontFamily: "Roboto Mono, Arial, sans-serif",
-    color: "#3D474D",
-    fontSize: "13px",
-  },
 })
 
-export default function App() {
-  const [tags, setTags] = useState<string[]>([])
+export const Tags: React.FC<{
+  onAddTag: (tag: string) => void
+  onRemoveTag: (tag: string) => void
+  tags: string[]
+}> = ({ tags, onAddTag, onRemoveTag }) => {
   const [isAdding, setIsAdding] = useState(false)
   const classes = useStyles()
 
@@ -89,17 +47,17 @@ export default function App() {
           className={classes.selectedTag}
           size="small"
           label={tag}
+          onClick={() => {
+            onRemoveTag(tag)
+          }}
         />
       ))}
       {isAdding ? (
         <NewTag
           onSelect={(tag) => {
             setIsAdding(false)
-
             if (tag) {
-              setTags((prev) => {
-                return prev.includes(tag) ? prev : [...prev, tag]
-              })
+              onAddTag(tag)
             }
           }}
         />
@@ -118,61 +76,56 @@ export default function App() {
   )
 }
 
-function FocusTextField(props: any) {
+function TagTextField(props: any) {
   const ref = useRef<HTMLElement>()
   useEffect(() => {
-    ref.current!.click()
+    ref.current!.focus()
+    function handleEsc(e: KeyboardEvent) {
+      // MAKE ESCAPE WORK
+    }
+    ref.current!.addEventListener("keydown", handleEsc)
   }, [])
 
-  return <TextField ref={ref} {...props} />
+  const [value, setValue] = useState<string>(props.value)
+
+  return (
+    <TextField
+      {...props}
+      value={value}
+      onChange={(e) => {
+        setValue(e.target.value.trimEnd())
+      }}
+      inputRef={ref}
+    />
+  )
 }
+
+const filter = createFilterOptions<{ tag: string; label: string }>()
 
 const NewTag: React.FC<{ onSelect: (tag: string | null) => void }> = ({
   onSelect,
 }) => {
-  const [value, setValue] = useState<{ title: string; inputValue?: string }>({
-    title: "",
-  })
-  const selectedValue = useRef("")
+  const options = useTopTags().map((tag) => ({ tag, label: tag }))
 
   return (
     <Autocomplete
-      value={value}
-      onChange={(event, newValue) => {
-        if (typeof newValue === "string") {
-          const val: string = newValue
-          setValue({
-            title: val,
-          })
-        } else if (newValue && newValue.inputValue) {
-          // Create a new value from the user input
-          setValue({
-            title: newValue.inputValue,
-          })
-        } else {
-          setValue(newValue as any)
-        }
-      }}
-      onClose={(_, reason) => {
+      onChange={(_, value, reason) => {
+        const tag = value && (typeof value === "string" ? value : value.tag)
         if (reason === "select-option" || (reason as any) === "create-option") {
-          onSelect(selectedValue.current)
+          onSelect(tag)
         } else {
           onSelect(null)
         }
-      }}
-      onInputChange={(_, value) => {
-        selectedValue.current = value
       }}
       filterOptions={(options, params) => {
         const filtered = filter(options, params)
 
         const { inputValue } = params
-        // Suggest the creation of a new value
-        const isExisting = options.some((option) => inputValue === option.title)
+        const isExisting = options.some((option) => inputValue === option.tag)
         if (inputValue !== "" && !isExisting) {
           filtered.unshift({
-            inputValue,
-            title: `Add "${inputValue}"`,
+            label: `Add "${inputValue}"`,
+            tag: inputValue,
           })
         }
 
@@ -184,21 +137,9 @@ const NewTag: React.FC<{ onSelect: (tag: string | null) => void }> = ({
       handleHomeEndKeys
       id="free-solo-with-text-demo"
       options={options}
-      getOptionLabel={(option) => {
-        // Value selected with enter, right from the input
-        if (typeof option === "string") {
-          return option
-        }
-        // Add "xxx" option created dynamically
-        if (option.inputValue) {
-          return option.inputValue
-        }
-        // Regular option
-        return option.title
-      }}
-      renderOption={(props) => <li {...props}>{props.title}</li>}
+      getOptionLabel={({ label }) => label}
       freeSolo
-      renderInput={(params) => <FocusTextField {...params} label="New tag" />}
+      renderInput={(params) => <TagTextField {...params} label="New tag" />}
     />
   )
 }
