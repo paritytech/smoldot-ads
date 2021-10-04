@@ -15,6 +15,9 @@ import {
 import { ExcludeLast, observableFromPolka, OnlyLast } from "../utils"
 import { activeAccount$ } from "../accounts"
 
+import { Detector } from '@substrate/connect'
+import adz from './adz.json'
+
 const { types } = definitions
 const DEFAULT_PROVIDER = "ws://127.0.0.1:9944"
 
@@ -24,6 +27,10 @@ export { changeProvider }
 const api$ = providerChange$.pipe(
   startWith(DEFAULT_PROVIDER),
   switchMap(
+    // async () => {
+    //   const detector = new Detector('Adz demo')
+    //   return await detector.connect('westend', JSON.stringify(adz)) as unknown as Promise<AdzApi>
+    // }
     (config) =>
       ApiPromise.create({
         provider: new WsProvider(config),
