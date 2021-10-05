@@ -4,10 +4,8 @@
 name: Deploy SmoldotAdz to IPFS
 
 on:
-  pull_request:
+  push:
     branches: [ main ]
-    types: 
-      - completed
 
 jobs:
   build:
