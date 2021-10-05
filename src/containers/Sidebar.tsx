@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core"
 import { useIsApiReady } from "../services/client"
 import AssignmentOutlinedIcon from "@material-ui/icons/AssignmentOutlined"
-import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline"
+import ChatBubbleOutline from "@material-ui/icons/ChatBubbleOutline"
 import FolderOpenIcon from "@material-ui/icons/FolderOpen"
 import ForumIcon from "@material-ui/icons/Forum"
 
@@ -205,7 +205,7 @@ const Sidebar = () => {
           selected
         >
           <ListItemIcon className={classes.menuIcon}>
-            <ChatBubbleOutlineIcon fontSize="small" />
+            <ChatBubbleOutline fontSize="small" />
           </ListItemIcon>
           <Typography variant="body1" className={classes.links}>
             My comments
@@ -234,7 +234,7 @@ const Sidebar = () => {
           appCtx.setShowCreatedAdd(true)
         }}
       >
-        New ad
+        New Post
       </Button>
       <NotifSamples />
       <NotifSamples showAction={3000} />
