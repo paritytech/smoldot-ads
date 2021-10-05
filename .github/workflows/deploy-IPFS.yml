@@ -6,6 +6,8 @@ name: SmoldotAdz CI
 on:
   pull_request:
     branches: [ main ]
+    types: 
+      - completed
 
 jobs:
   build:
@@ -26,3 +28,15 @@ jobs:
     - run: npm run build
     # - run: npm run test
     # - run: npm run deploy
+    - uses: anantaramdas/ipfs-pinata-deploy-action@v1.6.4
+      id: ipfs-upload
+      with:
+        pin-name: 'Ads Demo'
+        path: './dist'
+        pinata-api-key: ${{ secrets.PINATA_KEY }}
+        pinata-secret-api-key: ${{ secrets.PINATA_SECRET }}
+        remove-old: true
+      # only:
+      #   - main
+    - run: |
+        echo "Uploaded hash: ${{ steps.ipfs-upload.outputs.hash }}"
