@@ -13,11 +13,10 @@ import {
 } from "@material-ui/core"
 import { useIsApiReady } from "../services/client"
 import AssignmentOutlinedIcon from "@material-ui/icons/AssignmentOutlined"
-import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline"
+import ChatBubbleOutline from "@material-ui/icons/ChatBubbleOutline"
 import FolderOpenIcon from "@material-ui/icons/FolderOpen"
 import ForumIcon from "@material-ui/icons/Forum"
 
-import { createAd } from "../services"
 import { AppContext } from "../contexts/AppContext"
 
 import StatusCircle from "../components/StatusCircle"
@@ -79,77 +78,6 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const NotifSamples = (props: { showAction?: number }) => {
-  const appCtx = useContext(AppContext)
-
-  const obj = {
-    title: props.showAction ? "AutoClose" : "Manual Close",
-    text: "SmolAds is built with substrate-connect parachain tutorial.",
-    buttonText: "Explore substrate tutorials",
-    show: !appCtx.notification.show,
-    buttonAction: () =>
-      window.open("https://paritytech.github.io/substrate-connect/", "_blank"),
-  }
-
-  const finObj = props.showAction
-    ? Object.assign({}, { autoClose: props.showAction }, obj)
-    : Object.assign({}, obj)
-
-  return (
-    <Button onClick={() => appCtx.setNotification(finObj)}>
-      {props.showAction ? "AutoClose in 3 secs" : "Manual Close Notification"}
-    </Button>
-  )
-}
-
-// DUMMY GENERATOR
-// TODO:  DELETE WHEN UI IS READY
-const tags = [
-  "pizza",
-  "cola",
-  "whiskey",
-  "dog",
-  "cat",
-  "mouse",
-  "birdy",
-  "fox",
-  "cow",
-  "something",
-]
-
-const randomString = (length: number): string => {
-  let result: string = ""
-  const characters: string =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
-  const charactersLength: number = characters.length
-  for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength))
-  }
-  return result
-}
-
-const createDummyAd = async () => {
-  try {
-    // Make the transaction to create the add
-    const status = await createAd(randomString(5), randomString(50), [
-      tags[Math.floor(Math.random() * tags.length)],
-    ])
-    console.log(status.toHuman())
-  } catch (err) {
-    console.log("error", err)
-  }
-}
-
-// Generates Dummy ads (1 every 5 seconds)
-const generateDummyAds = () => {
-  let x = 0
-  const intervalID = window.setInterval(() => {
-    createDummyAd()
-    if (++x === 6) window.clearInterval(intervalID)
-  }, 5000)
-}
-// DUMMY GENERATOR END
-
 const Sidebar = () => {
   const classes = useStyles()
   const isApiReady = useIsApiReady()
@@ -205,7 +133,7 @@ const Sidebar = () => {
           selected
         >
           <ListItemIcon className={classes.menuIcon}>
-            <ChatBubbleOutlineIcon fontSize="small" />
+            <ChatBubbleOutline fontSize="small" />
           </ListItemIcon>
           <Typography variant="body1" className={classes.links}>
             My comments
@@ -234,10 +162,8 @@ const Sidebar = () => {
           appCtx.setShowCreatedAdd(true)
         }}
       >
-        New ad
+        New Post
       </Button>
-      <NotifSamples />
-      <NotifSamples showAction={3000} />
 
       <MenuItem classes={{ root: classes.helpGrid }}>
         <ListItemIcon className={classes.menuIcon}>

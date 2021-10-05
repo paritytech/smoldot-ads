@@ -1,14 +1,20 @@
 import React from "react"
 
-import { Box, makeStyles, Chip, Typography } from "@material-ui/core"
+import {
+  Box,
+  makeStyles,
+  Chip,
+  Typography,
+  capitalize,
+} from "@material-ui/core"
 import Identicon from "@polkadot/react-identicon"
-import VisibilityIcon from "@material-ui/icons/Visibility"
-import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline"
+import ChatBubbleIcon from "@material-ui/icons/ChatBubble"
 import { useAd } from "../services"
+
+import { accounts, useActiveAccount } from "../services/accounts"
 
 interface Props {
   id: number
-  address: string
   isClicked: boolean
   onClick: () => void
 }
@@ -16,11 +22,6 @@ interface Props {
 const useStyles = makeStyles({
   row: {
     marginBottom: "12.5px",
-  },
-  visibilityIcon: {
-    marginRight: "10px",
-    color: "#EAEEF1",
-    width: "18px",
   },
   adBox: {
     cursor: "pointer",
@@ -41,12 +42,10 @@ const useStyles = makeStyles({
   },
   author: {
     fontWeight: 600,
-    textOverflow: "ellipsis",
-    overflow: "hidden",
     maxWidth: "250px",
   },
   posted: {
-    margin: "0 10px",
+    margin: "0 10px 0 0",
     fontWeight: 400,
     fontSize: "13px",
     color: "#7E8D95",
@@ -66,11 +65,14 @@ const useStyles = makeStyles({
     color: "#172026",
   },
   comments: {
-    color: "#556068",
     fontWeight: 500,
   },
-  bubble: {
+  tag: {
     color: "#556068",
+    backgroundColor: "#EAEEF1",
+    padding: "4px 8px",
+  },
+  bubble: {
     fontWeight: 500,
     fontSize: "12px",
     margin: "0 9px 0",
@@ -88,12 +90,22 @@ const options: Intl.DateTimeFormatOptions = {
 
 const Ad: React.FunctionComponent<Props> = ({
   id,
-  address,
   isClicked,
   onClick,
 }: Props) => {
   const classes = useStyles(isClicked)
+  const activeAccount = useActiveAccount()
   const ad = useAd(id)
+
+  const bubbleColor =
+    ad && ad.numOfComments ? { color: "#11B37C" } : { color: "#556068" }
+
+  const myAccount = {
+    border: "1px solid #fff",
+    boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
+    padding: "4px 6px",
+    borderRadius: "8px",
+  }
 
   return (
     ad && (
@@ -105,32 +117,43 @@ const Ad: React.FunctionComponent<Props> = ({
           className={classes.row}
         >
           <Box component="div" display="flex" alignItems="center">
-            <VisibilityIcon className={classes.visibilityIcon} />
             <h4>{ad.title}</h4>
           </Box>
           <Box component="div">
             {ad.tags.map((tag) => (
-              <Chip key={tag} size="small" label={tag} />
+              <Chip
+                key={tag}
+                size="small"
+                label={tag}
+                className={classes.tag}
+              />
             ))}
           </Box>
         </Box>
         <Box display="flex" alignItems="center" className={classes.row}>
-          <Identicon
-            className={classes.identIcon}
-            size={18}
-            theme="polkadot"
-            value={address}
-            onCopy={() => {
-              console.log("copy")
-            }}
-          />
-          <Typography variant="body2" className={classes.author}>
-            {ad.author}
-          </Typography>
-          <Typography className={classes.posted}>posted at</Typography>
+          <Typography className={classes.posted}>Posted on</Typography>
           <Typography variant="body2" className={classes.date}>
             {ad.created.toLocaleString("en-US", options)}
           </Typography>
+          <Typography className={classes.posted}>by</Typography>
+          <Box
+            display="flex"
+            alignItems="center"
+            style={ad.author === activeAccount.address ? myAccount : {}}
+          >
+            <Identicon
+              className={classes.identIcon}
+              size={18}
+              theme="polkadot"
+              value={ad.author}
+              onCopy={() => {
+                console.log("copy")
+              }}
+            />
+            <Typography variant="body2" className={classes.author}>
+              {capitalize((accounts[ad.author].meta as any).name)}
+            </Typography>
+          </Box>
         </Box>
         <Box display="flex" alignItems="center" className={classes.row}>
           <Typography variant="body1" className={classes.body}>
@@ -138,8 +161,12 @@ const Ad: React.FunctionComponent<Props> = ({
           </Typography>
         </Box>
         <Box display="flex" alignItems="center">
-          <ChatBubbleOutlineIcon className={classes.bubble} />
-          <Typography variant="body1" className={classes.comments}>
+          <ChatBubbleIcon className={classes.bubble} style={bubbleColor} />
+          <Typography
+            variant="body1"
+            className={classes.comments}
+            style={bubbleColor}
+          >
             {ad.numOfComments}
           </Typography>
         </Box>

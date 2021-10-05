@@ -48,7 +48,6 @@ const Container = () => {
             <Subscribe fallback={null} key={id}>
               <Ad
                 id={id}
-                address={"5DTestUPts3kjeXSTMyerHihn1uwMfLj8vU8sqF7qYrFabHE"}
                 isClicked={id === selectedId}
                 onClick={() => {
                   setSelectedId(id)
@@ -61,7 +60,6 @@ const Container = () => {
           {selectedId !== null && (
             <DetailedAd
               id={selectedId}
-              address={"5DTestUPts3kjeXSTMyerHihn1uwMfLj8vU8sqF7qYrFabHE"}
               onClick={() => {
                 setSelectedId(null)
               }}

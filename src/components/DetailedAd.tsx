@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react"
+import React, { memo, useEffect, useContext, useState } from "react"
 import {
   Box,
   Button,
@@ -7,12 +7,12 @@ import {
   TextField,
   Typography,
   Theme,
+  Grid,
 } from "@material-ui/core"
 import Identicon from "@polkadot/react-identicon"
-import VisibilityIcon from "@material-ui/icons/Visibility"
-import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline"
-import EditOutlinedIcon from "@material-ui/icons/EditOutlined"
-import DeleteForeverOutlineIcon from "@material-ui/icons/DeleteForeverOutlined"
+import ChatBubbleIcon from "@material-ui/icons/ChatBubble"
+import EditIcon from "@material-ui/icons/Edit"
+import DeleteForever from "@material-ui/icons/DeleteForever"
 import ClearIcon from "@material-ui/icons/Clear"
 import {
   deleteAd,
@@ -21,18 +21,15 @@ import {
   useAd,
   useComment,
   createComment,
+  useAccountBalance,
 } from "../services"
-import { isEmptyText } from "../utils"
+import { isEmptyText, makeEllipsis, capitalize } from "../utils"
 import { UserRow } from "./UserRow"
+import { AppContext } from "../contexts/AppContext"
 
 const useStyles = makeStyles<Theme>(() => ({
   row: {
     marginBottom: "12.5px",
-  },
-  visibilityIcon: {
-    marginRight: "10px",
-    color: "#7E8D95",
-    width: "18px",
   },
   adBox: {
     margin: "10px",
@@ -43,14 +40,13 @@ const useStyles = makeStyles<Theme>(() => ({
   },
   identIcon: {
     marginRight: "10px",
-    border: "0.5px solid #ccc",
     borderRadius: "10px",
   },
   author: {
     fontWeight: 600,
   },
   posted: {
-    margin: "0 10px",
+    margin: "0 10px 0 0",
     fontWeight: 400,
     fontSize: "13px",
     color: "#7E8D95",
@@ -65,6 +61,8 @@ const useStyles = makeStyles<Theme>(() => ({
   },
   body: {
     color: "#172026",
+    fontSize: "18px",
+    marginBottom: "30px",
   },
   option: {
     color: "#556068",
@@ -76,14 +74,52 @@ const useStyles = makeStyles<Theme>(() => ({
   },
   bubble: {
     fontWeight: 500,
-    fontSize: "12px",
+    fontSize: "14px",
     margin: "0 9px 0",
   },
   pointer: {
     cursor: "pointer",
   },
+  comments: {
+    marginTop: "20px",
+    display: "flow-root",
+  },
+  commentBox: {
+    backgroundColor: "#F7F7F7",
+    margin: "10px",
+    padding: "10px",
+    clear: "both",
+    float: "left",
+    borderRadius: "5px",
+  },
+  commentAuthor: {
+    color: "#334048",
+    fontWeight: 500,
+    fontSize: "12px",
+  },
+  commentBody: {
+    color: "#172026",
+    fontSize: "16px",
+  },
   descriptionText: {
     width: "100%",
+    backgroundColor: "#F7F7F7",
+    borderRadius: "4px",
+  },
+  postButton: {
+    backgroundColor: "#DEE3E7",
+    borderRadius: "4px",
+    width: "100%",
+    marginTop: "20px",
+  },
+  tag: {
+    color: "#556068",
+    backgroundColor: "#EAEEF1",
+    padding: "4px 8px",
+  },
+  options: {
+    color: "#556068",
+    fontSize: "14px",
   },
 }))
 
@@ -97,7 +133,6 @@ const options: Intl.DateTimeFormatOptions = {
 }
 
 interface Props {
-  address: string
   id: number
   onClick: () => void
 }
@@ -106,6 +141,7 @@ const CommentForm: React.FC<{
   onSubmit: (body: string) => void
 }> = ({ onSubmit }) => {
   const classes = useStyles()
+  const balance = useAccountBalance()
   const [description, setDescription] = useState<string>("")
 
   return (
@@ -123,7 +159,8 @@ const CommentForm: React.FC<{
         }}
       />
       <Button
-        disabled={isEmptyText(description)}
+        className={classes.postButton}
+        disabled={isEmptyText(description) || balance === 0}
         onClick={() => {
           onSubmit(description)
         }}
@@ -138,16 +175,31 @@ const AdComment: React.FC<{
   adIdx: number
   commentIdx: number
 }> = memo(({ adIdx, commentIdx }) => {
+  const classes = useStyles()
   const comment = useComment(adIdx, commentIdx)
   if (!comment) return null
 
   const author: string = (accounts[comment.author].meta as any).name
-
   return (
-    <Box>
-      <Typography variant="body2">{author}</Typography>
-      <Typography variant="body2">{comment.body}</Typography>
-    </Box>
+    <Grid className={classes.commentBox}>
+      <Box component="div" display="flex" alignItems="center">
+        <Identicon
+          className={classes.identIcon}
+          size={18}
+          theme="polkadot"
+          value={comment.author}
+          onCopy={() => {
+            console.log("copy")
+          }}
+        />
+        <Typography variant="body2" className={classes.commentAuthor}>
+          {capitalize(author)}
+        </Typography>
+      </Box>
+      <Typography variant="body2" className={classes.commentBody}>
+        {comment.body}
+      </Typography>
+    </Grid>
   )
 })
 
@@ -155,24 +207,37 @@ const AdComments: React.FC<{
   adIdx: number
   nComments: number
 }> = ({ adIdx, nComments }) => (
-  <ul>
+  <>
     {Array(nComments)
       .fill(null)
       .map((_, commentIdx) => (
         <AdComment key={commentIdx} adIdx={adIdx} commentIdx={commentIdx} />
       ))}
-  </ul>
+  </>
 )
 
-const DetailedAd: React.FunctionComponent<Props> = ({
-  address,
-  id,
-  onClick,
-}) => {
+const DetailedAd: React.FunctionComponent<Props> = ({ id, onClick }) => {
   const classes = useStyles()
   const ad = useAd(id)
   const activeAccount = useActiveAccount()
   const [isEditing, setIsEditing] = useState(false)
+  const appCtx = useContext(AppContext)
+
+  useEffect(() => {
+    return () => {
+      setIsEditing(false)
+    }
+  }, [id])
+
+  const bubbleColor =
+    ad && ad.numOfComments ? { color: "#11B37C" } : { color: "#556068" }
+
+  const myAccount = {
+    border: "1px solid #fff",
+    boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
+    padding: "4px 6px",
+    borderRadius: "8px",
+  }
 
   return (
     ad && (
@@ -184,33 +249,44 @@ const DetailedAd: React.FunctionComponent<Props> = ({
           className={classes.row}
         >
           <Box component="div" display="flex" alignItems="center">
-            <VisibilityIcon className={classes.visibilityIcon} />
             <h4>{ad.title}</h4>
           </Box>
           <Box component="div" display="flex" alignItems="center">
             {ad.tags.map((tag) => (
-              <Chip key={tag} size="small" label={tag} />
+              <Chip
+                key={tag}
+                size="small"
+                className={classes.tag}
+                label={tag}
+              />
             ))}
             <ClearIcon className={classes.pointer} onClick={onClick} />
           </Box>
         </Box>
         <Box display="flex" alignItems="center" className={classes.row}>
-          <Identicon
-            className={classes.identIcon}
-            size={18}
-            theme="polkadot"
-            value={address}
-            onCopy={() => {
-              console.log("copy")
-            }}
-          />
-          <Typography variant="body2" className={classes.author}>
-            {ad.author}
-          </Typography>
-          <Typography className={classes.posted}>posted at</Typography>
+          <Typography className={classes.posted}>Posted on</Typography>
           <Typography variant="body2" className={classes.date}>
             {ad.created.toLocaleString("en-US", options)}
           </Typography>
+          <Typography className={classes.posted}>by</Typography>
+          <Box
+            display="flex"
+            alignItems="center"
+            style={ad.author === activeAccount.address ? myAccount : {}}
+          >
+            <Identicon
+              className={classes.identIcon}
+              size={18}
+              theme="polkadot"
+              value={ad.author}
+              onCopy={() => {
+                console.log("copy")
+              }}
+            />
+            <Typography variant="body2" className={classes.author}>
+              {capitalize((accounts[ad.author].meta as any).name)}
+            </Typography>
+          </Box>
         </Box>
         <Box display="flex" alignItems="center" className={classes.row}>
           <Typography variant="body1" className={classes.body}>
@@ -219,40 +295,65 @@ const DetailedAd: React.FunctionComponent<Props> = ({
         </Box>
         <Box display="flex" alignItems="center">
           <Box
+            display="flex"
+            alignItems="center"
             className={isEditing ? classes.option : classes.selectedOption}
             onClick={() => {
               setIsEditing(false)
             }}
           >
-            <ChatBubbleOutlineIcon className={classes.bubble} />
-            {ad.numOfComments}
+            <ChatBubbleIcon className={classes.bubble} style={bubbleColor} />
+            <span className={classes.options}>{ad.numOfComments}</span>
           </Box>
           <Box
+            display="flex"
+            alignItems="center"
             className={isEditing ? classes.selectedOption : classes.option}
             onClick={() => {
               setIsEditing(true)
             }}
           >
-            <EditOutlinedIcon className={classes.bubble} />
-            reply
+            <EditIcon className={classes.bubble} />
+            <span className={classes.options}>reply</span>
           </Box>
           {activeAccount.address === ad.author ? (
-            <Box className={classes.pointer} onClick={() => deleteAd(id)}>
-              <DeleteForeverOutlineIcon className={classes.bubble} />
-              delete
+            <Box
+              display="flex"
+              alignItems="center"
+              className={classes.pointer}
+              onClick={() => {
+                deleteAd(id)
+                appCtx.setNotification({
+                  title: "Deleted Ad",
+                  text: "An ad was deleted",
+                  show: !appCtx.notification.show,
+                  autoClose: 3000,
+                })
+              }}
+            >
+              <DeleteForever className={classes.bubble} />
+              <span className={classes.options}>delete</span>
             </Box>
           ) : null}
         </Box>
-        {isEditing ? (
-          <CommentForm
-            onSubmit={(body) => {
-              createComment(id, body)
-              setIsEditing(false)
-            }}
-          />
-        ) : (
-          <AdComments adIdx={id} nComments={ad.numOfComments} />
-        )}
+        <Box className={classes.comments}>
+          {isEditing ? (
+            <CommentForm
+              onSubmit={(body) => {
+                createComment(id, body)
+                appCtx.setNotification({
+                  title: "New reply",
+                  text: "A new reply was just posted",
+                  show: !appCtx.notification.show,
+                  autoClose: 3000,
+                })
+                setIsEditing(false)
+              }}
+            />
+          ) : (
+            <AdComments adIdx={id} nComments={ad.numOfComments} />
+          )}
+        </Box>
       </Box>
     )
   )
