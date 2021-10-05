@@ -236,9 +236,6 @@ const Sidebar = () => {
       >
         New ad
       </Button>
-      {/* Buttons for testing. TODO: Remove */}
-      <Button onClick={generateDummyAds}>Generate 6 ads (1/5secs)</Button>
-      <Button onClick={createDummyAd}>Create 1 ad</Button>
       <NotifSamples />
       <NotifSamples showAction={3000} />
 
