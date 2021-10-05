@@ -14,7 +14,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "concurrently \"yarn typecheck:watch\" \"parcel ./src/index.html\"",
-    "build": "yarn typecheck && parcel build ./src/index.html --detailed-report --public-url ./ --no-autoinstall",
+    "build": "npm run typecheck && parcel build ./src/index.html --detailed-report --public-url ./ --no-autoinstall",
     "typecheck": "tsc -b",
     "typecheck:watch": "tsc -b --watch",
     "format": "prettier --write ."

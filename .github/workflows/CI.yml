@@ -22,11 +22,10 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: yarn install
-    # - run: yarn lint
-    - run: yarn build
-    # - run: yarn test
-    # - run: yarn deploy
+    - run: npm install
+    - run: npm run build
+    # - run: npm run test
+    # - run: npm run deploy
     - uses: anantaramdas/ipfs-pinata-deploy-action@v1.6.4
       id: ipfs-upload
       with:
