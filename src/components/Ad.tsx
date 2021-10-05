@@ -1,10 +1,17 @@
 import React from "react"
 
-import { Box, makeStyles, Chip, Typography } from "@material-ui/core"
+import {
+  Box,
+  makeStyles,
+  Chip,
+  Typography,
+  capitalize,
+} from "@material-ui/core"
 import Identicon from "@polkadot/react-identicon"
 import ChatBubbleIcon from "@material-ui/icons/ChatBubble"
 import { useAd } from "../services"
-import { makeEllipsis } from "../utils"
+
+import { accounts, useActiveAccount } from "../services/accounts"
 
 interface Props {
   id: number
@@ -89,10 +96,18 @@ const Ad: React.FunctionComponent<Props> = ({
   onClick,
 }: Props) => {
   const classes = useStyles(isClicked)
+  const activeAccount = useActiveAccount()
   const ad = useAd(id)
 
   const bubbleColor =
     ad && ad.numOfComments ? { color: "#11B37C" } : { color: "#556068" }
+
+  const myAccount = {
+    border: "1px solid #fff",
+    boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
+    padding: "4px 6px",
+    borderRadius: "8px",
+  }
 
   return (
     ad && (
@@ -123,18 +138,24 @@ const Ad: React.FunctionComponent<Props> = ({
             {ad.created.toLocaleString("en-US", options)}
           </Typography>
           <Typography className={classes.posted}>by</Typography>
-          <Identicon
-            className={classes.identIcon}
-            size={18}
-            theme="polkadot"
-            value={ad.author}
-            onCopy={() => {
-              console.log("copy")
-            }}
-          />
-          <Typography variant="body2" className={classes.author}>
-            {makeEllipsis(ad.author)}
-          </Typography>
+          <Box
+            display="flex"
+            alignItems="center"
+            style={ad.author === activeAccount.address ? myAccount : {}}
+          >
+            <Identicon
+              className={classes.identIcon}
+              size={18}
+              theme="polkadot"
+              value={ad.author}
+              onCopy={() => {
+                console.log("copy")
+              }}
+            />
+            <Typography variant="body2" className={classes.author}>
+              {capitalize((accounts[ad.author].meta as any).name)}
+            </Typography>
+          </Box>
         </Box>
         <Box display="flex" alignItems="center" className={classes.row}>
           <Typography variant="body1" className={classes.body}>
