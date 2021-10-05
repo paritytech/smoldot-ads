@@ -4,8 +4,6 @@
 name: SmoldotAdz CI
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -29,11 +27,11 @@ jobs:
     - run: yarn build
     # - run: yarn test
     # - run: yarn deploy
-    - uses: anantaramdas/ipfs-pinata-deploy-action@v1.6.3
+    - uses: anantaramdas/ipfs-pinata-deploy-action@v1.6.4
       id: ipfs-upload
       with:
-        pin-name: 'adzDemo'
-        path: '.'
+        pin-name: 'Ads Demo'
+        path: './dist'
         pinata-api-key: ${{ secrets.PINATA_KEY }}
         pinata-secret-api-key: ${{ secrets.PINATA_SECRET }}
         remove-old: true
