@@ -5,9 +5,9 @@ name: SmoldotAdz CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -38,6 +38,6 @@ jobs:
         pinata-secret-api-key: ${{ secrets.PINATA_SECRET }}
         remove-old: true
       # only:
-      #   - master
+      #   - main
     - run: |
         echo "Uploaded hash: ${{ steps.ipfs-upload.outputs.hash }}"
