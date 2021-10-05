@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react"
+import React, { memo, useEffect, useContext, useState } from "react"
 import {
   Box,
   Button,
@@ -21,9 +21,11 @@ import {
   useAd,
   useComment,
   createComment,
+  useAccountBalance,
 } from "../services"
 import { isEmptyText, makeEllipsis, capitalize } from "../utils"
 import { UserRow } from "./UserRow"
+import { AppContext } from "../contexts/AppContext"
 
 const useStyles = makeStyles<Theme>(() => ({
   row: {
@@ -72,7 +74,7 @@ const useStyles = makeStyles<Theme>(() => ({
   },
   bubble: {
     fontWeight: 500,
-    fontSize: "12px",
+    fontSize: "14px",
     margin: "0 9px 0",
   },
   pointer: {
@@ -131,7 +133,6 @@ const options: Intl.DateTimeFormatOptions = {
 }
 
 interface Props {
-  address: string
   id: number
   onClick: () => void
 }
@@ -140,6 +141,7 @@ const CommentForm: React.FC<{
   onSubmit: (body: string) => void
 }> = ({ onSubmit }) => {
   const classes = useStyles()
+  const balance = useAccountBalance()
   const [description, setDescription] = useState<string>("")
 
   return (
@@ -158,7 +160,7 @@ const CommentForm: React.FC<{
       />
       <Button
         className={classes.postButton}
-        disabled={isEmptyText(description)}
+        disabled={isEmptyText(description) || balance === 0}
         onClick={() => {
           onSubmit(description)
         }}
@@ -178,7 +180,6 @@ const AdComment: React.FC<{
   if (!comment) return null
 
   const author: string = (accounts[comment.author].meta as any).name
-  console.log("comment", comment)
   return (
     <Grid className={classes.commentBox}>
       <Box component="div" display="flex" alignItems="center">
@@ -215,15 +216,18 @@ const AdComments: React.FC<{
   </>
 )
 
-const DetailedAd: React.FunctionComponent<Props> = ({
-  address,
-  id,
-  onClick,
-}) => {
+const DetailedAd: React.FunctionComponent<Props> = ({ id, onClick }) => {
   const classes = useStyles()
   const ad = useAd(id)
   const activeAccount = useActiveAccount()
   const [isEditing, setIsEditing] = useState(false)
+  const appCtx = useContext(AppContext)
+
+  useEffect(() => {
+    return () => {
+      setIsEditing(false)
+    }
+  }, [id])
 
   const bubbleColor =
     ad && ad.numOfComments ? { color: "#11B37C" } : { color: "#556068" }
@@ -317,7 +321,15 @@ const DetailedAd: React.FunctionComponent<Props> = ({
               display="flex"
               alignItems="center"
               className={classes.pointer}
-              onClick={() => deleteAd(id)}
+              onClick={() => {
+                deleteAd(id)
+                appCtx.setNotification({
+                  title: "Deleted Ad",
+                  text: "An ad was deleted",
+                  show: !appCtx.notification.show,
+                  autoClose: 3000,
+                })
+              }}
             >
               <DeleteForever className={classes.bubble} />
               <span className={classes.options}>delete</span>
@@ -329,6 +341,12 @@ const DetailedAd: React.FunctionComponent<Props> = ({
             <CommentForm
               onSubmit={(body) => {
                 createComment(id, body)
+                appCtx.setNotification({
+                  title: "New reply",
+                  text: "A new reply was just posted",
+                  show: !appCtx.notification.show,
+                  autoClose: 3000,
+                })
                 setIsEditing(false)
               }}
             />

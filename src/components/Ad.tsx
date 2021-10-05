@@ -15,7 +15,6 @@ import { accounts, useActiveAccount } from "../services/accounts"
 
 interface Props {
   id: number
-  address: string
   isClicked: boolean
   onClick: () => void
 }
@@ -91,7 +90,6 @@ const options: Intl.DateTimeFormatOptions = {
 
 const Ad: React.FunctionComponent<Props> = ({
   id,
-  address,
   isClicked,
   onClick,
 }: Props) => {

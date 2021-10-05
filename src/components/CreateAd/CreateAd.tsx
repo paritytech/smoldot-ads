@@ -5,7 +5,7 @@ import { Box, Button, Input, makeStyles, TextField } from "@material-ui/core"
 import { AppContext } from "../../contexts/AppContext"
 import { Tags } from "./Tags"
 import { isEmptyText } from "../../utils"
-import { createAd } from "../../../src/services"
+import { createAd, useAccountBalance } from "../../services"
 import { UserRow } from "../UserRow"
 
 const useStyles = makeStyles({
@@ -53,11 +53,18 @@ const useStyles = makeStyles({
     backgroundColor: "#EAEEF1",
     border: "1px solid #EAEEF1",
   },
+  postButton: {
+    backgroundColor: "#DEE3E7",
+    borderRadius: "4px",
+    width: "100%",
+    marginTop: "20px",
+  },
 })
 
 const CreateAd: React.FunctionComponent = () => {
   const appCtx = useContext(AppContext)
   const classes = useStyles()
+  const balance = useAccountBalance()
   const [title, setTitle] = useState<string>("")
   const [description, setDescription] = useState<string>("")
   const [selectedTags, setSelectedTags] = useState<string[]>([])
@@ -123,19 +130,19 @@ const CreateAd: React.FunctionComponent = () => {
         />
         <Button
           disabled={
-            selectedTags.length === 0 || [title, description].some(isEmptyText)
+            balance === 0 ||
+            selectedTags.length === 0 ||
+            [title, description].some(isEmptyText)
           }
+          className={classes.postButton}
           onClick={() => {
             createAd(title, description, selectedTags)
-
-            const obj = {
+            appCtx.setNotification({
               title: "Created Ad",
               text: "A new ad was just created",
               show: !appCtx.notification.show,
-            }
-
-            const finObj = Object.assign({}, { autoClose: 3000 }, obj)
-            appCtx.setNotification(finObj)
+              autoClose: 3000,
+            })
             appCtx.setShowCreatedAdd(false)
           }}
         >

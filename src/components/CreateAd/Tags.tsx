@@ -17,10 +17,14 @@ const useStyles = makeStyles({
     border: "1px solid #ABB8BF",
   },
   selectedTag: {
+    padding: "6px",
     cursor: "pointer",
     color: "#556068",
     backgroundColor: "#EAEEF1",
     border: "1px solid #EAEEF1",
+  },
+  tagSearchField: {
+    width: "200px",
   },
 })
 
@@ -47,7 +51,7 @@ export const Tags: React.FC<{
           className={classes.selectedTag}
           size="small"
           label={tag}
-          onClick={() => {
+          onDelete={() => {
             onRemoveTag(tag)
           }}
         />
@@ -105,21 +109,23 @@ const filter = createFilterOptions<{ tag: string; label: string }>()
 const NewTag: React.FC<{ onSelect: (tag: string | null) => void }> = ({
   onSelect,
 }) => {
+  const classes = useStyles()
   const options = useTopTags().map((tag) => ({ tag, label: tag }))
 
   return (
     <Autocomplete
       onChange={(_, value, reason) => {
+        console.log("val", value)
         const tag = value && (typeof value === "string" ? value : value.tag)
-        if (reason === "select-option" || (reason as any) === "create-option") {
-          onSelect(tag)
-        } else {
-          onSelect(null)
-        }
+        onSelect(
+          reason === "select-option" || (reason as any) === "create-option"
+            ? tag
+            : null,
+        )
       }}
+      className={classes.tagSearchField}
       filterOptions={(options, params) => {
         const filtered = filter(options, params)
-
         const { inputValue } = params
         const isExisting = options.some((option) => inputValue === option.tag)
         if (inputValue !== "" && !isExisting) {
@@ -128,7 +134,6 @@ const NewTag: React.FC<{ onSelect: (tag: string | null) => void }> = ({
             tag: inputValue,
           })
         }
-
         return filtered
       }}
       open
@@ -139,7 +144,7 @@ const NewTag: React.FC<{ onSelect: (tag: string | null) => void }> = ({
       options={options}
       getOptionLabel={({ label }) => label}
       freeSolo
-      renderInput={(params) => <TagTextField {...params} label="New tag" />}
+      renderInput={(params) => <TagTextField {...params} />}
     />
   )
 }
