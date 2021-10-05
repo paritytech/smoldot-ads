@@ -1,6 +1,6 @@
 import React from "react"
 import {
-  useAccounts,
+  accounts,
   onSelectActiveAccount,
   useActiveAccount,
   useAccountBalance,
@@ -11,7 +11,6 @@ function onChange(e: React.ChangeEvent<HTMLSelectElement>) {
 }
 
 export const CurrentUser: React.FC = () => {
-  const accounts = useAccounts()
   const activeAccount = useActiveAccount()
   const balance = useAccountBalance()
   return (
