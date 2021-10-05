@@ -14,7 +14,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "concurrently \"yarn typecheck:watch\" \"parcel ./src/index.html\"",
-    "build": "yarn typecheck && parcel build ./src/index.html --detailed-report --public-url ./ --no-autoinstall",
+    "build": "npm run typecheck && parcel build ./src/index.html --detailed-report --public-url ./ --no-autoinstall",
     "typecheck": "tsc -b",
     "typecheck:watch": "tsc -b --watch",
     "format": "prettier --write ."
@@ -47,6 +47,7 @@
     "@polkadot/util": "^7.3.1",
     "@react-rxjs/core": "^0.8.3",
     "@react-rxjs/utils": "^0.9.2",
+    "@substrate/connect": "^0.4.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-transition-group": "^4.4.2",

@@ -1,0 +1,42 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: SmoldotAdz CI
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: 
+      - completed
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm install
+    - run: npm run build
+    # - run: npm run test
+    # - run: npm run deploy
+    - uses: anantaramdas/ipfs-pinata-deploy-action@v1.6.4
+      id: ipfs-upload
+      with:
+        pin-name: 'Ads Demo'
+        path: './dist'
+        pinata-api-key: ${{ secrets.PINATA_KEY }}
+        pinata-secret-api-key: ${{ secrets.PINATA_SECRET }}
+        remove-old: true
+      # only:
+      #   - main
+    - run: |
+        echo "Uploaded hash: ${{ steps.ipfs-upload.outputs.hash }}"
