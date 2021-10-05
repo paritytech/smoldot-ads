@@ -37,7 +37,7 @@ const typography: ThemeOptions = {
       letterSpacing: 0.25,
     },
     button: {
-      fontWeight: 500,
+      fontWeight: 600,
       fontSize: 14,
       lineHeight: "140%",
       letterSpacing: 0.2,
