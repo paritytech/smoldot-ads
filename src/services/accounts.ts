@@ -5,13 +5,12 @@ import { createTestKeyring } from "@polkadot/keyring"
 import { KeyringPair } from "@polkadot/keyring/types"
 import { systemQuery } from "./client"
 
-const accounts: Record<string, KeyringPair> = Object.fromEntries(
+export const accounts: Record<string, KeyringPair> = Object.fromEntries(
   createTestKeyring().pairs.map(
     (account) => [account.address, account] as const,
   ),
 )
 const DEFAULT_ADDRESS = Object.keys(accounts)[0]
-export const useAccounts = () => accounts
 
 const [selectedActiveAccount$, onSelectActiveAccount] = createSignal(
   (address: string) => address,
@@ -34,7 +33,6 @@ export const [useAccountBalance] = bind(
     switchMap(({ address }) =>
       systemQuery("account", address).pipe(
         map(({ data }) => data.free.toHuman()),
-        startWith(null),
       ),
     ),
   ),

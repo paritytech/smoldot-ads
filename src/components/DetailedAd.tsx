@@ -1,13 +1,31 @@
-import React from "react"
-
-import { Box, makeStyles, Chip, Typography } from "@material-ui/core"
+import React, { memo, useState } from "react"
+import {
+  Box,
+  Button,
+  makeStyles,
+  Chip,
+  TextField,
+  Typography,
+  Theme,
+} from "@material-ui/core"
 import Identicon from "@polkadot/react-identicon"
 import VisibilityIcon from "@material-ui/icons/Visibility"
 import ChatBubbleOutlineIcon from "@material-ui/icons/ChatBubbleOutline"
+import EditOutlinedIcon from "@material-ui/icons/EditOutlined"
+import DeleteForeverOutlineIcon from "@material-ui/icons/DeleteForeverOutlined"
 import ClearIcon from "@material-ui/icons/Clear"
-import { useAd } from "../services"
+import {
+  deleteAd,
+  accounts,
+  useActiveAccount,
+  useAd,
+  useComment,
+  createComment,
+} from "../services"
+import { isEmptyText } from "../utils"
+import { UserRow } from "./UserRow"
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles<Theme>(() => ({
   row: {
     marginBottom: "12.5px",
   },
@@ -48,18 +66,24 @@ const useStyles = makeStyles((theme) => ({
   body: {
     color: "#172026",
   },
-  comments: {
+  option: {
     color: "#556068",
-    fontWeight: 500,
+    cursor: "pointer",
+  },
+  selectedOption: {
+    color: "green",
+    cursor: "pointer",
   },
   bubble: {
-    color: "#556068",
     fontWeight: 500,
     fontSize: "12px",
     margin: "0 9px 0",
   },
-  clearIcon: {
+  pointer: {
     cursor: "pointer",
+  },
+  descriptionText: {
+    width: "100%",
   },
 }))
 
@@ -78,6 +102,68 @@ interface Props {
   onClick: () => void
 }
 
+const CommentForm: React.FC<{
+  onSubmit: (body: string) => void
+}> = ({ onSubmit }) => {
+  const classes = useStyles()
+  const [description, setDescription] = useState<string>("")
+
+  return (
+    <Box>
+      <UserRow />
+      <TextField
+        className={classes.descriptionText}
+        rows={5}
+        maxRows={5}
+        variant="outlined"
+        multiline
+        value={description}
+        onChange={(e) => {
+          setDescription(e.target.value)
+        }}
+      />
+      <Button
+        disabled={isEmptyText(description)}
+        onClick={() => {
+          onSubmit(description)
+        }}
+      >
+        Post
+      </Button>
+    </Box>
+  )
+}
+
+const AdComment: React.FC<{
+  adIdx: number
+  commentIdx: number
+}> = memo(({ adIdx, commentIdx }) => {
+  const comment = useComment(adIdx, commentIdx)
+  if (!comment) return null
+
+  const author: string = (accounts[comment.author].meta as any).name
+
+  return (
+    <Box>
+      <Typography variant="body2">{author}</Typography>
+      <Typography variant="body2">{comment.body}</Typography>
+    </Box>
+  )
+})
+
+const AdComments: React.FC<{
+  adIdx: number
+  nComments: number
+}> = ({ adIdx, nComments }) => (
+  <ul>
+    {Array(nComments)
+      .fill(null)
+      .map((_, commentIdx) => (
+        <AdComment key={commentIdx} adIdx={adIdx} commentIdx={commentIdx} />
+      ))}
+  </ul>
+)
+
 const DetailedAd: React.FunctionComponent<Props> = ({
   address,
   id,
@@ -85,6 +171,8 @@ const DetailedAd: React.FunctionComponent<Props> = ({
 }) => {
   const classes = useStyles()
   const ad = useAd(id)
+  const activeAccount = useActiveAccount()
+  const [isEditing, setIsEditing] = useState(false)
 
   return (
     ad && (
@@ -103,7 +191,7 @@ const DetailedAd: React.FunctionComponent<Props> = ({
             {ad.tags.map((tag) => (
               <Chip key={tag} size="small" label={tag} />
             ))}
-            <ClearIcon className={classes.clearIcon} onClick={onClick} />
+            <ClearIcon className={classes.pointer} onClick={onClick} />
           </Box>
         </Box>
         <Box display="flex" alignItems="center" className={classes.row}>
@@ -130,11 +218,41 @@ const DetailedAd: React.FunctionComponent<Props> = ({
           </Typography>
         </Box>
         <Box display="flex" alignItems="center">
-          <ChatBubbleOutlineIcon className={classes.bubble} />
-          <Typography variant="body1" className={classes.comments}>
-            8
-          </Typography>
+          <Box
+            className={isEditing ? classes.option : classes.selectedOption}
+            onClick={() => {
+              setIsEditing(false)
+            }}
+          >
+            <ChatBubbleOutlineIcon className={classes.bubble} />
+            {ad.numOfComments}
+          </Box>
+          <Box
+            className={isEditing ? classes.selectedOption : classes.option}
+            onClick={() => {
+              setIsEditing(true)
+            }}
+          >
+            <EditOutlinedIcon className={classes.bubble} />
+            reply
+          </Box>
+          {activeAccount.address === ad.author ? (
+            <Box className={classes.pointer} onClick={() => deleteAd(id)}>
+              <DeleteForeverOutlineIcon className={classes.bubble} />
+              delete
+            </Box>
+          ) : null}
         </Box>
+        {isEditing ? (
+          <CommentForm
+            onSubmit={(body) => {
+              createComment(id, body)
+              setIsEditing(false)
+            }}
+          />
+        ) : (
+          <AdComments adIdx={id} nComments={ad.numOfComments} />
+        )}
       </Box>
     )
   )

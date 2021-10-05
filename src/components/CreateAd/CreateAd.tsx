@@ -1,23 +1,12 @@
 import React, { useContext, useState } from "react"
 
 import ClearIcon from "@material-ui/icons/Clear"
-import {
-  Box,
-  Button,
-  Input,
-  makeStyles,
-  TextField,
-  Typography,
-} from "@material-ui/core"
+import { Box, Button, Input, makeStyles, TextField } from "@material-ui/core"
 import { AppContext } from "../../contexts/AppContext"
-import Identicon from "@polkadot/react-identicon"
 import { Tags } from "./Tags"
 import { isEmptyText } from "../../utils"
-import {
-  useActiveAccount,
-  useAccountBalance,
-} from ".././../../src/services/accounts"
 import { createAd } from "../../../src/services"
+import { UserRow } from "../UserRow"
 
 const useStyles = makeStyles({
   row: {
@@ -33,11 +22,6 @@ const useStyles = makeStyles({
     padding: "15vw 15vw",
     height: "100vh",
     backdropFilter: "blur(3px)",
-  },
-  identIcon: {
-    marginRight: "10px",
-    border: "0.5px solid #ccc",
-    borderRadius: "10px",
   },
   title: {
     width: "100%",
@@ -69,47 +53,7 @@ const useStyles = makeStyles({
     backgroundColor: "#EAEEF1",
     border: "1px solid #EAEEF1",
   },
-  balance: {
-    fontFamily: "Roboto Mono, Arial, sans-serif",
-    color: "#3D474D",
-    fontSize: "13px",
-  },
 })
-
-const UserRow: React.FC = () => {
-  const classes = useStyles()
-  const activeAccount = useActiveAccount()
-  const balance = useAccountBalance()
-
-  const name = activeAccount.meta.name as string
-
-  return (
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="space-between"
-      className={classes.row}
-    >
-      <Box display="flex" alignItems="center" className={classes.row}>
-        <Identicon
-          className={classes.identIcon}
-          size={22}
-          theme="polkadot"
-          value={"5DTestUPts3kjeXSTMyerHihn1uwMfLj8vU8sqF7qYrFabHE"}
-          onCopy={() => {
-            console.log("copy")
-          }}
-        />
-        <Typography variant="body2" style={{ fontSize: "20px" }}>
-          {name}
-        </Typography>
-      </Box>
-      <Typography variant="body2" className={classes.balance}>
-        {balance}
-      </Typography>
-    </Box>
-  )
-}
 
 const CreateAd: React.FunctionComponent = () => {
   const appCtx = useContext(AppContext)
