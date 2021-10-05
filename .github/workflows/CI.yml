@@ -6,6 +6,8 @@ name: SmoldotAdz CI
 on:
   pull_request:
     branches: [ main ]
+    types: 
+      - completed
 
 jobs:
   build:
