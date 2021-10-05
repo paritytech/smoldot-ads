@@ -4,7 +4,7 @@ import Autocomplete, {
   createFilterOptions,
 } from "@material-ui/lab/Autocomplete"
 import { Box, Chip, makeStyles } from "@material-ui/core"
-import { useTopTags } from "../../../src/services"
+import { useTopTags } from "../../services"
 
 const useStyles = makeStyles({
   row: {

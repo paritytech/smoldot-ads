@@ -127,6 +127,15 @@ const CreateAd: React.FunctionComponent = () => {
           }
           onClick={() => {
             createAd(title, description, selectedTags)
+
+            const obj = {
+              title: "Created Ad",
+              text: "A new ad was just created",
+              show: !appCtx.notification.show,
+            }
+
+            const finObj = Object.assign({}, { autoClose: 3000 }, obj)
+            appCtx.setNotification(finObj)
             appCtx.setShowCreatedAdd(false)
           }}
         >
