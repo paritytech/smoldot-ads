@@ -115,7 +115,6 @@ const NewTag: React.FC<{ onSelect: (tag: string | null) => void }> = ({
   return (
     <Autocomplete
       onChange={(_, value, reason) => {
-        console.log("val", value)
         const tag = value && (typeof value === "string" ? value : value.tag)
         onSelect(
           reason === "select-option" || (reason as any) === "create-option"

@@ -11,7 +11,7 @@ import Identicon from "@polkadot/react-identicon"
 import ChatBubbleIcon from "@material-ui/icons/ChatBubble"
 import { useAd } from "../services"
 
-import { accounts, useActiveAccount } from "../services/accounts"
+import { useActiveAccount } from "../services/accounts"
 
 interface Props {
   id: number
@@ -107,6 +107,9 @@ const Ad: React.FunctionComponent<Props> = ({
     borderRadius: "8px",
   }
 
+  const bodyText =
+    ad && ad.body.length > 666 ? ad.body.slice(0, 666).concat("...") : ad?.body
+
   return (
     ad && (
       <Box className={classes.adBox} onClick={onClick}>
@@ -151,13 +154,13 @@ const Ad: React.FunctionComponent<Props> = ({
               }}
             />
             <Typography variant="body2" className={classes.author}>
-              {capitalize((accounts[ad.author].meta as any).name)}
+              {ad.author}
             </Typography>
           </Box>
         </Box>
         <Box display="flex" alignItems="center" className={classes.row}>
           <Typography variant="body1" className={classes.body}>
-            {ad.body}
+            {bodyText}
           </Typography>
         </Box>
         <Box display="flex" alignItems="center">

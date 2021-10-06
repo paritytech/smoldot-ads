@@ -1,9 +1,9 @@
 import React, { ChangeEvent } from "react"
 import {
-  accounts,
   onSelectActiveAccount,
   useActiveAccount,
   useAccountBalance,
+  useAccounts,
 } from "../../services"
 import Select from "@material-ui/core/Select"
 import MenuItem from "@material-ui/core/MenuItem"
@@ -21,12 +21,14 @@ function onChange(
 }
 
 const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(0.5),
-    minWidth: 120,
+  boxControl: {
     position: "absolute",
+    minWidth: 120,
     top: "10px",
     right: "10px",
+  },
+  formControl: {
+    margin: theme.spacing(0.5),
   },
   identIcon: {
     marginRight: "10px",
@@ -35,8 +37,15 @@ const useStyles = makeStyles((theme) => ({
   },
   accountName: {
     fontSize: "17px",
-    color: "##334048",
+    color: "#334048",
     fontWeight: 600,
+    paddingRight: "5px",
+  },
+  accountBalance: {
+    margin: theme.spacing(1),
+    fontSize: "15px",
+    color: "#334048",
+    fontWeight: 400,
   },
   item: {
     padding: "20px",
@@ -53,37 +62,48 @@ const MySelect = styled(Select)({
 export const CurrentUser: React.FC = () => {
   const classes = useStyles()
 
-  const activeAccount = useActiveAccount()
+  const accounts = useAccounts()
   const balance = useAccountBalance()
+  const activeAccount = useActiveAccount()
+
   return (
-    <FormControl variant="outlined" className={classes.formControl}>
-      <MySelect
-        labelId="demo-simple-select-outlined-label"
-        id="demo-simple-select-outlined"
-        value={activeAccount.address}
-        onChange={onChange}
-      >
-        {Object.values(accounts).map((account) => {
-          const { address, meta } = account
-          const displayName = capitalize((meta as any).name)
-          return (
-            <MenuItem className={classes.item} value={address}>
-              <Box display="flex" alignItems="center">
-                <Identicon
-                  className={classes.identIcon}
-                  size={18}
-                  theme="polkadot"
+    activeAccount && (
+      <Box display="flex" alignItems="center" className={classes.boxControl}>
+        <span className={classes.accountBalance}>{balance}</span>
+        <FormControl variant="outlined" className={classes.formControl}>
+          <MySelect
+            labelId="demo-simple-select-outlined-label"
+            id="demo-simple-select-outlined"
+            value={activeAccount.address}
+            onChange={onChange}
+          >
+            {Object.values(accounts).map((account) => {
+              const { address, meta } = account
+              const displayName = capitalize((meta as any).name)
+              return (
+                <MenuItem
+                  className={classes.item}
+                  key={address}
                   value={address}
-                  onCopy={() => {
-                    console.log("copy")
-                  }}
-                />
-                <span className={classes.accountName}>{displayName}</span>
-              </Box>
-            </MenuItem>
-          )
-        })}
-      </MySelect>
-    </FormControl>
+                >
+                  <Box display="flex" alignItems="center">
+                    <Identicon
+                      className={classes.identIcon}
+                      size={18}
+                      theme="polkadot"
+                      value={address}
+                      onCopy={() => {
+                        console.log("copy")
+                      }}
+                    />
+                    <span className={classes.accountName}>{displayName}</span>
+                  </Box>
+                </MenuItem>
+              )
+            })}
+          </MySelect>
+        </FormControl>
+      </Box>
+    )
   )
 }

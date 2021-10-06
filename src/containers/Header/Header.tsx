@@ -1,8 +1,10 @@
-import React from "react"
+import React, { Suspense } from "react"
 import { CurrentUser } from "./CurrentUser"
 
 export const Header: React.FC = () => (
   <div>
-    <CurrentUser />
+    <Suspense fallback={null}>
+      <CurrentUser />
+    </Suspense>
   </div>
 )

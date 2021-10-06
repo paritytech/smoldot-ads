@@ -1,5 +1,7 @@
 export const definitions = {
   types: {
+    AdId: "u32",
+    CommentId: "u32",
     Ad: {
       author: "AccountId",
       selected_applicant: "Option<AccountId>",

@@ -16,14 +16,13 @@ import DeleteForever from "@material-ui/icons/DeleteForever"
 import ClearIcon from "@material-ui/icons/Clear"
 import {
   deleteAd,
-  accounts,
   useActiveAccount,
   useAd,
   useComment,
   createComment,
   useAccountBalance,
 } from "../services"
-import { isEmptyText, makeEllipsis, capitalize } from "../utils"
+import { isEmptyText, capitalize } from "../utils"
 import { UserRow } from "./UserRow"
 import { AppContext } from "../contexts/AppContext"
 
@@ -179,7 +178,7 @@ const AdComment: React.FC<{
   const comment = useComment(adIdx, commentIdx)
   if (!comment) return null
 
-  const author: string = (accounts[comment.author].meta as any).name
+  const { author } = comment
   return (
     <Grid className={classes.commentBox}>
       <Box component="div" display="flex" alignItems="center">
@@ -284,7 +283,7 @@ const DetailedAd: React.FunctionComponent<Props> = ({ id, onClick }) => {
               }}
             />
             <Typography variant="body2" className={classes.author}>
-              {capitalize((accounts[ad.author].meta as any).name)}
+              {ad.author}
             </Typography>
           </Box>
         </Box>
