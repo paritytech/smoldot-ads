@@ -1,39 +1,67 @@
 import { bind } from "@react-rxjs/core"
 import { createSignal } from "@react-rxjs/utils"
-import { map, startWith, switchMap } from "rxjs/operators"
+import { filter, map, startWith, switchMap } from "rxjs/operators"
 import { createTestKeyring } from "@polkadot/keyring"
-import { KeyringPair } from "@polkadot/keyring/types"
 import { systemQuery } from "./client"
-import { web3Accounts, web3Enable } from "@polkadot/extension-dapp"
+import {
+  web3Accounts,
+  web3Enable,
+  web3FromSource,
+} from "@polkadot/extension-dapp"
+import { defer, combineLatest } from "rxjs"
+import type { KeypairType } from "@polkadot/util-crypto/types"
+import { Signer } from "@polkadot/api/types"
 
-const getAccounts = async () => {
-  await web3Enable("my app")
-  const accounts = await web3Accounts()
-  console.log("createTestKeyring().pairs", createTestKeyring().pairs)
-  console.log("accounts", accounts)
-  return accounts
+export interface InjectedAccountWithMeta {
+  address: string
+  meta: {
+    genesisHash?: string | null
+    name?: string
+    source: string
+  }
+  signer: Signer
+  type?: KeypairType
 }
 
-const injectedAccounts = getAccounts()
+const getAccounts = async () => {
+  const extensions = await web3Enable("my app")
+  let accounts: Array<InjectedAccountWithMeta> = []
 
-export const accounts: Record<string, KeyringPair> = Object.fromEntries(
-  createTestKeyring().pairs.map(
-    (account) => [account.address, account] as const,
-  ),
+  if (extensions.length === 0) {
+    accounts = createTestKeyring().pairs as any
+  } else {
+    accounts = (await web3Accounts()) as any
+    const signatures = await Promise.all(
+      accounts.map((account) => web3FromSource(account.meta.source)),
+    )
+    accounts.forEach((account, idx) => {
+      ;(account as any).signer = signatures[idx]
+    })
+  }
+
+  return Object.fromEntries(
+    accounts.map((account) => [account.address, account] as const),
+  )
+}
+
+const [useAccounts, accounts$] = bind(
+  defer(() => getAccounts()),
+  {},
 )
-const DEFAULT_ADDRESS = Object.keys(accounts)[0]
+export { useAccounts }
 
 const [selectedActiveAccount$, onSelectActiveAccount] = createSignal(
   (address: string) => address,
 )
 export { onSelectActiveAccount }
 
-export const [useActiveAccount, activeAccount$] = bind<KeyringPair>(
-  selectedActiveAccount$.pipe(
-    startWith(DEFAULT_ADDRESS),
+export const [useActiveAccount, activeAccount$] = bind(
+  combineLatest([selectedActiveAccount$.pipe(startWith(null)), accounts$]).pipe(
     map(
-      (selecteAddress) => accounts[selecteAddress] ?? accounts[DEFAULT_ADDRESS],
+      ([selecteAddress, accounts]) =>
+        accounts[selecteAddress ?? Object.keys(accounts)[0]],
     ),
+    filter(Boolean),
   ),
 )
 
@@ -41,6 +69,7 @@ activeAccount$.subscribe()
 
 export const [useAccountBalance] = bind(
   activeAccount$.pipe(
+    filter(Boolean),
     switchMap(({ address }) =>
       systemQuery("account", address).pipe(
         map(({ data }) => data.free.toHuman()),

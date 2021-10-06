@@ -1,4 +1,5 @@
 import { ApiPromise } from "@polkadot/api"
+import { Signer } from "@polkadot/api/types"
 import { KeyringPair } from "@polkadot/keyring/types"
 import { MoveFirstToTheEnd } from "../utils"
 
@@ -16,7 +17,7 @@ export type PolkaQueryFunction<
 >
 
 export interface SignAndSend<T> {
-  signAndSend: (author: KeyringPair) => Promise<T>
+  signAndSend: (author: KeyringPair | { signer: Signer }) => Promise<T>
 }
 
 export type PolkaMutation<A extends any[], R = RawData> = (

@@ -11,7 +11,7 @@ import Identicon from "@polkadot/react-identicon"
 import ChatBubbleIcon from "@material-ui/icons/ChatBubble"
 import { useAd } from "../services"
 
-import { accounts, useActiveAccount } from "../services/accounts"
+import { useActiveAccount } from "../services/accounts"
 
 interface Props {
   id: number
@@ -154,7 +154,7 @@ const Ad: React.FunctionComponent<Props> = ({
               }}
             />
             <Typography variant="body2" className={classes.author}>
-              {capitalize((accounts[ad.author].meta as any).name)}
+              {ad.author}
             </Typography>
           </Box>
         </Box>

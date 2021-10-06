@@ -2,7 +2,6 @@ import { firstValueFrom, Observable } from "rxjs"
 import { startWith, switchMap, mapTo, withLatestFrom } from "rxjs/operators"
 import { createSignal } from "@react-rxjs/utils"
 import { bind, shareLatest } from "@react-rxjs/core"
-import { ApiPromise, WsProvider } from "@polkadot/api"
 import { definitions } from "../../config/definitions"
 import {
   AdzApi,
@@ -62,7 +61,7 @@ export const adzMutation = <K extends keyof AdzMutations>(
             MutationArgs<AdzMutations[K]>,
             MutationReturn<AdzMutations[K]>
           >
-        )(...args).signAndSend(author),
+        )(...args).signAndSend({ signer: author.signer }),
       ),
     ),
   )
