@@ -17,7 +17,7 @@ export const createComment = (adIdx: number, body: string) =>
 export const deleteComment = (adIdx: number, commentIdx: number) =>
   adzMutation("deleteComment", adIdx, commentIdx)
 
-export const [useComment] = bind(
+export const [useComment, comment$] = bind(
   (adIdx: number, commentIdx: number) =>
     adzQuery("comments", adIdx, commentIdx).pipe(
       map((rawComment): Comment | null => {

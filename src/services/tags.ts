@@ -1,7 +1,7 @@
 import { bind, shareLatest } from "@react-rxjs/core"
 import { combineKeys } from "@react-rxjs/utils"
 import { distinctUntilChanged, filter, map, pipe, scan, startWith } from "rxjs"
-import { ad$, adsAmount$ } from "./ads"
+import { ad$, adIds$ } from "./ads"
 
 // TEMPORARY CODE STARTS
 //
@@ -43,15 +43,7 @@ const [, adTagsDeltas$] = bind(
   ),
 )
 
-const adIds$ = adsAmount$.pipe(
-  map((nAds) =>
-    Array(nAds)
-      .fill(null)
-      .map((_, idx) => idx),
-  ),
-)
-
-const tags$ = combineKeys(adIds$, adTagsDeltas$).pipe(
+export const tags$ = combineKeys(adIds$, adTagsDeltas$).pipe(
   scan((acc, deltas) => {
     const result = new Map(acc)
 
@@ -82,7 +74,7 @@ const tags$ = combineKeys(adIds$, adTagsDeltas$).pipe(
 
     return result
   }, new Map<string, Set<number>>()),
-  startWith(new Map()),
+  startWith(new Map<string, Set<number>>()),
   shareLatest(),
 )
 
@@ -90,6 +82,7 @@ const tags$ = combineKeys(adIds$, adTagsDeltas$).pipe(
 // once the tags endpoint is working we should be able to replace
 // all ^^ that code with the following line:
 // const tags$ = adzQuery('tags').pipe(shareLatest())
+//
 
 const sortedTags$ = tags$.pipe(
   map((adIdsByTag) =>
