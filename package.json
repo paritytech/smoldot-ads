@@ -42,6 +42,7 @@
     "@material-ui/lab": "*",
     "@material-ui/styles": "^4.11.4",
     "@polkadot/api": "^5.7.1",
+    "@polkadot/extension-dapp": "^0.40.3",
     "@polkadot/keyring": "^7.3.1",
     "@polkadot/react-identicon": "^0.85.3",
     "@polkadot/util": "^7.3.1",

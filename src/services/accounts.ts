@@ -4,6 +4,17 @@ import { map, startWith, switchMap } from "rxjs/operators"
 import { createTestKeyring } from "@polkadot/keyring"
 import { KeyringPair } from "@polkadot/keyring/types"
 import { systemQuery } from "./client"
+import { web3Accounts, web3Enable } from "@polkadot/extension-dapp"
+
+const getAccounts = async () => {
+  await web3Enable("my app")
+  const accounts = await web3Accounts()
+  console.log("createTestKeyring().pairs", createTestKeyring().pairs)
+  console.log("accounts", accounts)
+  return accounts
+}
+
+const injectedAccounts = getAccounts()
 
 export const accounts: Record<string, KeyringPair> = Object.fromEntries(
   createTestKeyring().pairs.map(
