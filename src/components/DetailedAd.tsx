@@ -175,8 +175,9 @@ const CommentForm: React.FC<{
 
 const AdComment: React.FC<{
   adIdx: number
+  adAuthor: string
   commentIdx: number
-}> = memo(({ adIdx, commentIdx }) => {
+}> = memo(({ adIdx, adAuthor, commentIdx }) => {
   const classes = useStyles()
   const comment = useComment(adIdx, commentIdx)
   if (!comment) return null
@@ -212,40 +213,42 @@ const AdComment: React.FC<{
         >
           {makeEllipsis(author)}
         </Typography>
-        <Box
-          display="flex"
-          alignItems="center"
-          className={classes.pointer}
-          onClick={() => {
-            selectApplicant(adIdx, author).then(
-              (k) => {
-                console.log("Ok we select the applicant", k)
-                deleteAd(adIdx).then(
-                  () => {
-                    appCtx.setNotification({
-                      title: "Applicant selected",
-                      text: `Applicant ${makeEllipsis(author)} was selected.`,
-                      show: !appCtx.notification.show,
-                      type: "success",
-                      autoClose: 3000,
-                    })
-                  },
-                  (e) => console.log("error", e),
-                )
-              },
-              (e) => {
-                appCtx.setNotification({
-                  title: "Applicant selected error",
-                  type: "error",
-                  text: "Error:".concat(e),
-                  show: !appCtx.notification.show,
-                })
-              },
-            )
-          }}
-        >
-          <CheckCircleIcon className={classes.bubble} />
-        </Box>
+        {activeAccount.address === adAuthor && (
+          <Box
+            display="flex"
+            alignItems="center"
+            className={classes.pointer}
+            onClick={() => {
+              selectApplicant(adIdx, author).then(
+                (k) => {
+                  console.log("Ok we select the applicant", k)
+                  deleteAd(adIdx).then(
+                    () => {
+                      appCtx.setNotification({
+                        title: "Applicant selected",
+                        text: `Applicant ${makeEllipsis(author)} was selected.`,
+                        show: !appCtx.notification.show,
+                        type: "success",
+                        autoClose: 3000,
+                      })
+                    },
+                    (e) => console.log("error", e),
+                  )
+                },
+                (e) => {
+                  appCtx.setNotification({
+                    title: "Applicant selected error",
+                    type: "error",
+                    text: "Error:".concat(e),
+                    show: !appCtx.notification.show,
+                  })
+                },
+              )
+            }}
+          >
+            <CheckCircleIcon className={classes.bubble} />
+          </Box>
+        )}
       </Box>
       <Typography variant="body2" className={classes.commentBody}>
         {comment.body}
@@ -256,13 +259,19 @@ const AdComment: React.FC<{
 
 const AdComments: React.FC<{
   adIdx: number
+  adAuthor: string
   nComments: number
-}> = ({ adIdx, nComments }) => (
+}> = ({ adIdx, adAuthor, nComments }) => (
   <>
     {Array(nComments)
       .fill(null)
       .map((_, commentIdx) => (
-        <AdComment key={commentIdx} adIdx={adIdx} commentIdx={commentIdx} />
+        <AdComment
+          key={commentIdx}
+          adAuthor={adAuthor}
+          adIdx={adIdx}
+          commentIdx={commentIdx}
+        />
       ))}
   </>
 )
@@ -408,7 +417,11 @@ const DetailedAd: React.FunctionComponent<Props> = ({ id, onClick }) => {
               }}
             />
           ) : (
-            <AdComments adIdx={id} nComments={ad.numOfComments} />
+            <AdComments
+              adIdx={id}
+              adAuthor={ad.author}
+              nComments={ad.numOfComments}
+            />
           )}
         </Box>
       </Box>
