@@ -1,4 +1,4 @@
-import { bind } from "@react-rxjs/core"
+import { bind, shareLatest } from "@react-rxjs/core"
 import { map } from "rxjs"
 import { adzMutation, adzQuery } from "./client"
 import { epochToDate, persistLocally } from "./utils"
@@ -19,6 +19,15 @@ export const [useAdsAmount, adsAmount$] = bind(
     persistLocally("adsAmount"),
   ),
   0,
+)
+
+export const adIds$ = adsAmount$.pipe(
+  map((nAds) =>
+    Array(nAds)
+      .fill(null)
+      .map((_, idx) => idx),
+  ),
+  shareLatest(),
 )
 
 export const [useAd, ad$] = bind((adIdx: number) =>

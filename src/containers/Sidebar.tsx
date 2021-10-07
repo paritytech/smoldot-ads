@@ -12,9 +12,15 @@ import {
   ListItemIcon,
 } from "@material-ui/core"
 import { useIsApiReady } from "../services/client"
+import {
+  AdFilters,
+  onChangeSelectedFilter,
+  useActiveFilter,
+  useMyAdsCount,
+  useMyCommentedAdsCount,
+} from "../services/filteredAdIds"
 import AssignmentOutlinedIcon from "@material-ui/icons/AssignmentOutlined"
 import ChatBubbleOutline from "@material-ui/icons/ChatBubbleOutline"
-import FolderOpenIcon from "@material-ui/icons/FolderOpen"
 import ForumIcon from "@material-ui/icons/Forum"
 
 import { AppContext } from "../contexts/AppContext"
@@ -82,6 +88,9 @@ const Sidebar = () => {
   const classes = useStyles()
   const isApiReady = useIsApiReady()
   const appCtx = useContext(AppContext)
+  const activeFilter = useActiveFilter()
+  const myAdsCount = useMyAdsCount()
+  const myCommentedAdsCount = useMyCommentedAdsCount()
 
   return (
     <Grid item sm={3} md={2} className={classes.sidebar}>
@@ -96,6 +105,10 @@ const Sidebar = () => {
             root: classes.menuItemRoot,
             selected: classes.menuItemSelected,
           }}
+          onClick={() => {
+            onChangeSelectedFilter(AdFilters.All)
+          }}
+          selected={activeFilter === AdFilters.All}
         >
           <ListItemIcon className={classes.menuIcon}>
             <AssignmentOutlinedIcon fontSize="small" />
@@ -114,6 +127,10 @@ const Sidebar = () => {
             root: classes.menuItemRoot,
             selected: classes.menuItemSelected,
           }}
+          onClick={() => {
+            onChangeSelectedFilter(AdFilters.MyAds)
+          }}
+          selected={activeFilter === AdFilters.MyAds}
         >
           <ListItemIcon className={classes.menuIcon}>
             <AssignmentOutlinedIcon fontSize="small" />
@@ -122,7 +139,7 @@ const Sidebar = () => {
             My ads
           </Typography>
           <Typography variant="body1" className={classes.linksNotification}>
-            (2)
+            ({myAdsCount})
           </Typography>
         </MenuItem>
         <MenuItem
@@ -130,18 +147,22 @@ const Sidebar = () => {
             root: classes.menuItemRoot,
             selected: classes.menuItemSelected,
           }}
-          selected
+          onClick={() => {
+            onChangeSelectedFilter(AdFilters.MyComments)
+          }}
+          selected={activeFilter === AdFilters.MyComments}
         >
           <ListItemIcon className={classes.menuIcon}>
             <ChatBubbleOutline fontSize="small" />
           </ListItemIcon>
           <Typography variant="body1" className={classes.links}>
-            My comments
+            My commented Ads
           </Typography>
           <Typography variant="body1" className={classes.linksNotification}>
-            (2)
+            ({myCommentedAdsCount})
           </Typography>
         </MenuItem>
+        {/*
         <MenuItem
           classes={{
             root: classes.menuItemRoot,
@@ -155,6 +176,7 @@ const Sidebar = () => {
             My agreements
           </Typography>
         </MenuItem>
+        */}
       </MenuList>
       <Button
         className={classes.buttonAdd}

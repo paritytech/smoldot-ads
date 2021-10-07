@@ -1,13 +1,13 @@
-import React, { useContext, useMemo, useState } from "react"
+import React, { useContext, useState } from "react"
 import { Subscribe } from "@react-rxjs/core"
 import { createStyles, Grid, makeStyles } from "@material-ui/core"
 
 import Ad from "../components/Ad"
 import SearchBar from "../components/SearchBar"
 import DetailedAd from "../components/DetailedAd"
-import { useAdsAmount } from "../services"
 import { AppContext } from "../contexts/AppContext"
 import CreateAd from "../components/CreateAd"
+import { useFilteredAds } from "../services/filteredAdIds"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -27,14 +27,11 @@ const Container = () => {
   const appCtx = useContext(AppContext)
   const [selectedId, setSelectedId] = useState<number | null>(null)
 
-  const nAds = useAdsAmount()
-  const sortedAddIds = useMemo(
-    () =>
-      Array(nAds)
-        .fill(null)
-        .map((_, idx) => nAds - idx - 1),
-    [nAds],
-  )
+  const sortedAddIds = useFilteredAds()
+
+  if (selectedId !== null && sortedAddIds.indexOf(selectedId) === -1) {
+    setSelectedId(null)
+  }
 
   return (
     <Grid item container className={classes.main} sm={9} md={10}>
