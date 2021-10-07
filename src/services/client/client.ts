@@ -20,8 +20,9 @@ import {
 import { ExcludeLast, observableFromPolka, OnlyLast } from "../utils"
 import { AccountType, activeAccount$ } from "../accounts"
 
-import { Detector } from "@substrate/connect"
-import adz from "../../assets/adz.json"
+// import { Detector } from "@substrate/connect"
+// import adz from "../../assets/adz.json"
+import { ApiPromise, WsProvider } from "@polkadot/api"
 
 const { types } = definitions
 const DEFAULT_PROVIDER = "ws://127.0.0.1:9944"
@@ -31,19 +32,19 @@ export { changeProvider }
 
 const api$ = providerChange$.pipe(
   startWith(DEFAULT_PROVIDER),
-  switchMap(() => {
-    const detect = new Detector("Classified Ads")
-    return detect.connect("westend", JSON.stringify(adz), {
-      types,
-    }) as unknown as Promise<AdzApi>
-  }),
-  // switchMap(
-  //   (config) =>
-  //     ApiPromise.create({
-  //       provider: new WsProvider(config),
-  //       types,
-  //     }) as unknown as Promise<AdzApi>,
-  // ),
+  // switchMap(() => {
+  //   const detect = new Detector("Classified Ads")
+  //   return detect.connect("westend", JSON.stringify(adz), {
+  //     types,
+  //   }) as unknown as Promise<AdzApi>
+  // }),
+  switchMap(
+    (config) =>
+      ApiPromise.create({
+        provider: new WsProvider(config),
+        types,
+      }) as unknown as Promise<AdzApi>,
+  ),
   shareLatest(),
 )
 

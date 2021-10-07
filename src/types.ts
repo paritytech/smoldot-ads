@@ -7,6 +7,7 @@ export interface NotificationProps {
   buttonText?: string
   buttonAction?: MouseEventHandler
   autoClose?: number
+  type: 'success' | 'error'
 }
 
 export interface AppProps {

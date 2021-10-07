@@ -22,7 +22,7 @@ import {
   createComment,
   useAccountBalance,
 } from "../services"
-import { isEmptyText, capitalize } from "../utils"
+import { isEmptyText, capitalize, makeEllipsis } from "../utils"
 import { UserRow } from "./UserRow"
 import { AppContext } from "../contexts/AppContext"
 
@@ -99,6 +99,7 @@ const useStyles = makeStyles<Theme>(() => ({
   commentBody: {
     color: "#172026",
     fontSize: "16px",
+    marginTop: "10px",
   },
   descriptionText: {
     width: "100%",
@@ -177,8 +178,23 @@ const AdComment: React.FC<{
   const classes = useStyles()
   const comment = useComment(adIdx, commentIdx)
   if (!comment) return null
+  const activeAccount = useActiveAccount().payload
+
+  const myAccount = {
+    border: "1px solid #fff",
+    boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
+    padding: "4px 6px",
+    borderRadius: "8px",
+    backgroundColor: "#fff",
+  }
 
   const { author } = comment
+
+  console.log(
+    "{activeAccount.address === ad.author ? (",
+    author,
+    activeAccount.address === author,
+  )
   return (
     <Grid className={classes.commentBox}>
       <Box component="div" display="flex" alignItems="center">
@@ -188,11 +204,15 @@ const AdComment: React.FC<{
           theme="polkadot"
           value={comment.author}
           onCopy={() => {
-            console.log("copy")
+            return
           }}
         />
-        <Typography variant="body2" className={classes.commentAuthor}>
-          {capitalize(author)}
+        <Typography
+          variant="body2"
+          style={activeAccount.address === author ? myAccount : {}}
+          className={classes.commentAuthor}
+        >
+          {makeEllipsis(author)}
         </Typography>
       </Box>
       <Typography variant="body2" className={classes.commentBody}>
@@ -279,11 +299,11 @@ const DetailedAd: React.FunctionComponent<Props> = ({ id, onClick }) => {
               theme="polkadot"
               value={ad.author}
               onCopy={() => {
-                console.log("copy")
+                return
               }}
             />
             <Typography variant="body2" className={classes.author}>
-              {ad.author}
+              {makeEllipsis(ad.author)}
             </Typography>
           </Box>
         </Box>
@@ -321,13 +341,25 @@ const DetailedAd: React.FunctionComponent<Props> = ({ id, onClick }) => {
               alignItems="center"
               className={classes.pointer}
               onClick={() => {
-                deleteAd(id)
-                appCtx.setNotification({
-                  title: "Deleted Ad",
-                  text: "An ad was deleted",
-                  show: !appCtx.notification.show,
-                  autoClose: 3000,
-                })
+                deleteAd(id).then(
+                  () => {
+                    appCtx.setNotification({
+                      title: "Deleted Ad",
+                      text: "An ad was deleted",
+                      show: !appCtx.notification.show,
+                      type: "success",
+                      autoClose: 3000,
+                    })
+                  },
+                  (e) => {
+                    appCtx.setNotification({
+                      title: "Deleted Ad",
+                      type: "error",
+                      text: "Error:".concat(e),
+                      show: !appCtx.notification.show,
+                    })
+                  },
+                )
               }}
             >
               <DeleteForever className={classes.bubble} />
@@ -340,12 +372,6 @@ const DetailedAd: React.FunctionComponent<Props> = ({ id, onClick }) => {
             <CommentForm
               onSubmit={(body) => {
                 createComment(id, body)
-                appCtx.setNotification({
-                  title: "New reply",
-                  text: "A new reply was just posted",
-                  show: !appCtx.notification.show,
-                  autoClose: 3000,
-                })
                 setIsEditing(false)
               }}
             />

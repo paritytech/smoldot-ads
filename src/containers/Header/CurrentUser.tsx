@@ -12,7 +12,7 @@ import { makeStyles } from "@material-ui/core/styles"
 import Identicon from "@polkadot/react-identicon"
 import { styled } from "@material-ui/core/styles"
 import { Box } from "@material-ui/core"
-import { capitalize } from "../../utils"
+import { capitalize, makeEllipsis } from "../../utils"
 
 function onChange(
   e: ChangeEvent<{ name?: string | undefined; value: unknown }>,
@@ -41,6 +41,12 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
     paddingRight: "5px",
   },
+  accountAddress: {
+    fontSize: "14px",
+    color: "#334048",
+    fontWeight: 300,
+    paddingRight: "5px",
+  },
   accountBalance: {
     margin: theme.spacing(1),
     fontSize: "15px",
@@ -56,7 +62,7 @@ const MySelect = styled(Select)({
   borderRadius: 10,
   boxShadow: "0 3px 5px 2px rgba(255, 105, 135, .3)",
   padding: "0 5px",
-  height: "40px",
+  height: "50px",
 })
 
 export const CurrentUser: React.FC = () => {
@@ -93,10 +99,15 @@ export const CurrentUser: React.FC = () => {
                       theme="polkadot"
                       value={address}
                       onCopy={() => {
-                        console.log("copy")
+                        return
                       }}
                     />
-                    <span className={classes.accountName}>{displayName}</span>
+                    <Box>
+                      <span className={classes.accountName}>{displayName}</span>
+                      <span className={classes.accountAddress}>
+                        {makeEllipsis(address)}
+                      </span>
+                    </Box>
                   </Box>
                 </MenuItem>
               )
