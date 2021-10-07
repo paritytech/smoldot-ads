@@ -186,7 +186,6 @@ const AdComment: React.FC<{
 }> = memo(({ adIdx, adAuthor, commentIdx }) => {
   const classes = useStyles()
   const comment = useComment(adIdx, commentIdx)
-  if (!comment) return null
   const activeAccount = useActiveAccount().payload
   const appCtx = useContext(AppContext)
 
@@ -197,6 +196,7 @@ const AdComment: React.FC<{
     borderRadius: "8px",
     backgroundColor: "#fff",
   }
+  if (!comment) return null
 
   const { author } = comment
 
