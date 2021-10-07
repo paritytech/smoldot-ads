@@ -176,9 +176,9 @@ const AdComment: React.FC<{
   commentIdx: number
 }> = memo(({ adIdx, commentIdx }) => {
   const classes = useStyles()
+  const activeAccount = useActiveAccount().payload
   const comment = useComment(adIdx, commentIdx)
   if (!comment) return null
-  const activeAccount = useActiveAccount().payload
 
   const myAccount = {
     border: "1px solid #fff",
