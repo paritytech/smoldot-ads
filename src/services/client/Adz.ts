@@ -16,8 +16,16 @@ export type PolkaQueryFunction<
   (cb: (...args: T) => void, ...args: A) => Promise<() => void>
 >
 
+type SignAndSendFn<T> = {
+  (
+    address: string,
+    options: { signer: Signer },
+    cb: (update: T) => void,
+  ): Promise<() => void>
+  (keyring: KeyringPair, cb: (update: T) => void): Promise<() => void>
+}
 export interface SignAndSend<T> {
-  signAndSend: (author: KeyringPair | { signer: Signer }) => Promise<T>
+  signAndSend: SignAndSendFn<T>
 }
 
 export type PolkaMutation<A extends any[], R = RawData> = (

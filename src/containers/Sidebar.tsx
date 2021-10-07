@@ -89,8 +89,8 @@ const Sidebar = () => {
   const isApiReady = useIsApiReady()
   const appCtx = useContext(AppContext)
   const activeFilter = useActiveFilter()
-  const myAdsCount = useMyAdsCount()
-  const myCommentedAdsCount = useMyCommentedAdsCount()
+  const myAdsCount = 0 //useMyAdsCount()
+  const myCommentedAdsCount = 0 //useMyCommentedAdsCount()
 
   return (
     <Grid item sm={3} md={2} className={classes.sidebar}>
