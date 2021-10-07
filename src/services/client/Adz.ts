@@ -60,6 +60,7 @@ export interface AdzMutations {
   >
   createComment: PolkaMutation<[body: string, adIdx: number]>
   deleteComment: PolkaMutation<[adIdx: number, commentIdx: number]>
+  selectApplicant: PolkaMutation<[adIdx: number, applicant: string]>
 }
 
 export interface AdzQueries {
