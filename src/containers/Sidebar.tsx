@@ -89,14 +89,14 @@ const Sidebar = () => {
   const isApiReady = useIsApiReady()
   const appCtx = useContext(AppContext)
   const activeFilter = useActiveFilter()
-  const myAdsCount = 0 //useMyAdsCount()
-  const myCommentedAdsCount = 0 //useMyCommentedAdsCount()
+  const myAdsCount = useMyAdsCount()
+  const myCommentedAdsCount = useMyCommentedAdsCount()
 
   return (
     <Grid item sm={3} md={2} className={classes.sidebar}>
       <Box paddingTop={2} paddingBottom={2}>
         <Typography variant="h4">
-          <StatusCircle connected={isApiReady} /> Smold Ads
+          <StatusCircle connected={isApiReady} /> Smol Ads
         </Typography>
       </Box>
       <MenuList>
@@ -156,7 +156,7 @@ const Sidebar = () => {
             <ChatBubbleOutline fontSize="small" />
           </ListItemIcon>
           <Typography variant="body1" className={classes.links}>
-            My commented Ads
+            My comments
           </Typography>
           <Typography variant="body1" className={classes.linksNotification}>
             ({myCommentedAdsCount})
