@@ -13,6 +13,7 @@ import Identicon from "@polkadot/react-identicon"
 import ChatBubbleIcon from "@material-ui/icons/ChatBubble"
 import EditIcon from "@material-ui/icons/Edit"
 import DeleteForever from "@material-ui/icons/DeleteForever"
+import CheckCircleIcon from "@material-ui/icons/CheckCircle"
 import ClearIcon from "@material-ui/icons/Clear"
 import {
   deleteAd,
@@ -21,8 +22,9 @@ import {
   useComment,
   createComment,
   useAccountBalance,
+  selectApplicant,
 } from "../services"
-import { isEmptyText, capitalize, makeEllipsis } from "../utils"
+import { isEmptyText, makeEllipsis } from "../utils"
 import { UserRow } from "./UserRow"
 import { AppContext } from "../contexts/AppContext"
 
@@ -179,6 +181,7 @@ const AdComment: React.FC<{
   const comment = useComment(adIdx, commentIdx)
   if (!comment) return null
   const activeAccount = useActiveAccount().payload
+  const appCtx = useContext(AppContext)
 
   const myAccount = {
     border: "1px solid #fff",
@@ -190,11 +193,6 @@ const AdComment: React.FC<{
 
   const { author } = comment
 
-  console.log(
-    "{activeAccount.address === ad.author ? (",
-    author,
-    activeAccount.address === author,
-  )
   return (
     <Grid className={classes.commentBox}>
       <Box component="div" display="flex" alignItems="center">
@@ -214,6 +212,40 @@ const AdComment: React.FC<{
         >
           {makeEllipsis(author)}
         </Typography>
+        <Box
+          display="flex"
+          alignItems="center"
+          className={classes.pointer}
+          onClick={() => {
+            selectApplicant(adIdx, author).then(
+              (k) => {
+                console.log("Ok we select the applicant", k)
+                deleteAd(adIdx).then(
+                  () => {
+                    appCtx.setNotification({
+                      title: "Applicant selected",
+                      text: `Applicant ${makeEllipsis(author)} was selected.`,
+                      show: !appCtx.notification.show,
+                      type: "success",
+                      autoClose: 3000,
+                    })
+                  },
+                  (e) => console.log("error", e),
+                )
+              },
+              (e) => {
+                appCtx.setNotification({
+                  title: "Applicant selected error",
+                  type: "error",
+                  text: "Error:".concat(e),
+                  show: !appCtx.notification.show,
+                })
+              },
+            )
+          }}
+        >
+          <CheckCircleIcon className={classes.bubble} />
+        </Box>
       </Box>
       <Typography variant="body2" className={classes.commentBody}>
         {comment.body}

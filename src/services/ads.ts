@@ -55,3 +55,6 @@ export const updateAd = (
   content: string,
   tags: string[],
 ) => adzMutation("updateAd", adIdx, title, content, tags)
+
+export const selectApplicant = (adIdx: number, applicant: string) =>
+  adzMutation("selectApplicant", adIdx, applicant)
