@@ -154,7 +154,7 @@ export const [useActiveFilter, activeFilter$] = bind(
 const userAds$ = activeAccount$.pipe(
   switchMap((account) =>
     byAdAuthor$.pipe(
-      map((dic) => dic.get(account.address) ?? new Set<number>()),
+      map((dic) => dic.get(account.payload.address) ?? new Set<number>()),
     ),
   ),
 )
@@ -163,7 +163,7 @@ export const [useMyAdsCount] = bind(userAds$.pipe(pluck("size")), 0)
 const userCommentAds$ = activeAccount$.pipe(
   switchMap((account) =>
     byAdCommentsAuthor$.pipe(
-      map((dic) => dic.get(account.address) ?? new Set<number>()),
+      map((dic) => dic.get(account.payload.address) ?? new Set<number>()),
     ),
   ),
 )

@@ -1,5 +1,11 @@
 import { firstValueFrom, Observable } from "rxjs"
-import { startWith, switchMap, mapTo, withLatestFrom } from "rxjs/operators"
+import {
+  startWith,
+  switchMap,
+  mapTo,
+  withLatestFrom,
+  skipWhile,
+} from "rxjs/operators"
 import { createSignal } from "@react-rxjs/utils"
 import { bind, shareLatest } from "@react-rxjs/core"
 import { definitions } from "../../config/definitions"
@@ -12,7 +18,7 @@ import {
   SystemQueries,
 } from "./Adz"
 import { ExcludeLast, observableFromPolka, OnlyLast } from "../utils"
-import { activeAccount$ } from "../accounts"
+import { AccountType, activeAccount$ } from "../accounts"
 
 import { Detector } from "@substrate/connect"
 import adz from "../../assets/adz.json"
@@ -56,12 +62,22 @@ export const adzMutation = <K extends keyof AdzMutations>(
     api$.pipe(
       withLatestFrom(activeAccount$),
       switchMap(([api, author]) =>
-        (
-          api.tx.adz[key] as unknown as PolkaMutation<
-            MutationArgs<AdzMutations[K]>,
-            MutationReturn<AdzMutations[K]>
-          >
-        )(...args).signAndSend({ signer: author.signer }),
+        observableFromPolka<any>((next) => {
+          const instance = (
+            api.tx.adz[key] as unknown as PolkaMutation<
+              MutationArgs<AdzMutations[K]>,
+              MutationReturn<AdzMutations[K]>
+            >
+          )(...args)
+
+          return author.type === AccountType.InjectedAccountWithMeta
+            ? instance.signAndSend(
+                author.payload.address,
+                { signer: author.payload.signer },
+                next,
+              )
+            : instance.signAndSend(author.payload, next)
+        }).pipe(skipWhile(({ status }) => !status.isFinalized)),
       ),
     ),
   )

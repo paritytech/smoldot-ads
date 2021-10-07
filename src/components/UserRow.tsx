@@ -26,7 +26,7 @@ const useStyles = makeStyles({
 
 export const UserRow: React.FC = () => {
   const classes = useStyles()
-  const activeAccount = useActiveAccount()
+  const activeAccount = useActiveAccount().payload
   const balance = useAccountBalance()
 
   const name = capitalize(activeAccount.meta.name as string)

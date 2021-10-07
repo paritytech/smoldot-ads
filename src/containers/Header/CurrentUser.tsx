@@ -64,7 +64,7 @@ export const CurrentUser: React.FC = () => {
 
   const accounts = useAccounts()
   const balance = useAccountBalance()
-  const activeAccount = useActiveAccount()
+  const activeAccount = useActiveAccount().payload
 
   return (
     activeAccount && (
@@ -78,7 +78,7 @@ export const CurrentUser: React.FC = () => {
             onChange={onChange}
           >
             {Object.values(accounts).map((account) => {
-              const { address, meta } = account
+              const { address, meta } = account.payload
               const displayName = capitalize((meta as any).name)
               return (
                 <MenuItem

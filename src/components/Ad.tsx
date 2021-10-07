@@ -1,12 +1,6 @@
 import React from "react"
 
-import {
-  Box,
-  makeStyles,
-  Chip,
-  Typography,
-  capitalize,
-} from "@material-ui/core"
+import { Box, makeStyles, Chip, Typography } from "@material-ui/core"
 import Identicon from "@polkadot/react-identicon"
 import ChatBubbleIcon from "@material-ui/icons/ChatBubble"
 import { useAd } from "../services"
@@ -142,7 +136,7 @@ const Ad: React.FunctionComponent<Props> = ({
           <Box
             display="flex"
             alignItems="center"
-            style={ad.author === activeAccount.address ? myAccount : {}}
+            style={ad.author === activeAccount.payload.address ? myAccount : {}}
           >
             <Identicon
               className={classes.identIcon}

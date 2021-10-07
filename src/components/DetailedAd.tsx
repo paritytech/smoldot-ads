@@ -218,7 +218,7 @@ const AdComments: React.FC<{
 const DetailedAd: React.FunctionComponent<Props> = ({ id, onClick }) => {
   const classes = useStyles()
   const ad = useAd(id)
-  const activeAccount = useActiveAccount()
+  const activeAccount = useActiveAccount().payload
   const [isEditing, setIsEditing] = useState(false)
   const appCtx = useContext(AppContext)
 

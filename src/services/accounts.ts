@@ -11,6 +11,7 @@ import {
 import { defer, combineLatest } from "rxjs"
 import type { KeypairType } from "@polkadot/util-crypto/types"
 import { Signer } from "@polkadot/api/types"
+import { KeyringPair } from "@polkadot/keyring/types"
 
 export interface InjectedAccountWithMeta {
   address: string
@@ -23,24 +24,50 @@ export interface InjectedAccountWithMeta {
   type?: KeypairType
 }
 
+export enum AccountType {
+  KeyringPair,
+  InjectedAccountWithMeta,
+}
+
+export interface InjectedAccount {
+  type: AccountType.InjectedAccountWithMeta
+  payload: InjectedAccountWithMeta
+}
+
+export interface KeyringPairAccount {
+  type: AccountType.KeyringPair
+  payload: KeyringPair
+}
+
 const getAccounts = async () => {
-  const extensions = await web3Enable("my app")
-  let accounts: Array<InjectedAccountWithMeta> = []
+  const extensions = await web3Enable("Ads App")
+  let accounts: Array<InjectedAccount> | Array<KeyringPairAccount> = []
 
   if (extensions.length === 0) {
-    accounts = createTestKeyring().pairs as any
+    accounts = createTestKeyring().pairs.map((account) => ({
+      type: AccountType.KeyringPair as const,
+      payload: account,
+    }))
   } else {
-    accounts = (await web3Accounts()) as any
+    const injectedAccounts = await (web3Accounts() as Promise<
+      InjectedAccountWithMeta[]
+    >)
+
+    accounts = injectedAccounts.map((account) => ({
+      type: AccountType.InjectedAccountWithMeta as const,
+      payload: account,
+    }))
+
     const signatures = await Promise.all(
-      accounts.map((account) => web3FromSource(account.meta.source)),
+      accounts.map((account) => web3FromSource(account.payload.meta.source)),
     )
     accounts.forEach((account, idx) => {
-      ;(account as any).signer = signatures[idx]
+      account.payload.signer = signatures[idx].signer
     })
   }
 
   return Object.fromEntries(
-    accounts.map((account) => [account.address, account] as const),
+    accounts.map((account) => [account.payload.address, account] as const),
   )
 }
 
@@ -70,7 +97,7 @@ activeAccount$.subscribe()
 export const [useAccountBalance] = bind(
   activeAccount$.pipe(
     filter(Boolean),
-    switchMap(({ address }) =>
+    switchMap(({ payload: { address } }) =>
       systemQuery("account", address).pipe(
         map(({ data }) => data.free.toHuman()),
       ),
