@@ -136,13 +136,25 @@ const CreateAd: React.FunctionComponent = () => {
           }
           className={classes.postButton}
           onClick={() => {
-            createAd(title, description, selectedTags)
-            appCtx.setNotification({
-              title: "Created Ad",
-              text: "A new ad was just created",
-              show: !appCtx.notification.show,
-              autoClose: 3000,
-            })
+            createAd(title, description, selectedTags).then(
+              () => {
+                appCtx.setNotification({
+                  title: "Created Ad",
+                  text: "A new ad was just created",
+                  show: !appCtx.notification.show,
+                  type: "success",
+                  autoClose: 3000,
+                })
+              },
+              (e) => {
+                appCtx.setNotification({
+                  title: "Created Ad",
+                  type: "error",
+                  text: "Error:".concat(e),
+                  show: !appCtx.notification.show,
+                })
+              },
+            )
             appCtx.setShowCreatedAdd(false)
           }}
         >

@@ -10,6 +10,9 @@ import {
 import CloseIcon from "@material-ui/icons/Close"
 import { CSSTransition } from "react-transition-group"
 import { AppContext } from "../contexts/AppContext"
+import CheckCircleIcon from "@material-ui/icons/CheckCircle"
+import ErrorIcon from "@material-ui/icons/Error"
+import { red } from "@material-ui/core/colors"
 
 const useStyles = makeStyles((theme) => ({
   ".notification-enter": {
@@ -55,6 +58,12 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid #ccc",
     margin: "10px 0",
   },
+  error: {
+    color: "red",
+  },
+  success: {
+    color: "green",
+  },
 }))
 
 const NotificationBase = ({
@@ -64,6 +73,7 @@ const NotificationBase = ({
   buttonText,
   buttonAction,
   autoClose,
+  type,
 }: NotificationProps) => {
   const classes = useStyles()
   const appCtx = useContext(AppContext)
@@ -108,6 +118,11 @@ const NotificationBase = ({
         )}
         {title && (
           <Typography variant="body1" className={classes.title}>
+            {type === "success" ? (
+              <CheckCircleIcon className={classes.success} />
+            ) : (
+              <ErrorIcon className={classes.error} />
+            )}
             {title}
           </Typography>
         )}
@@ -127,6 +142,7 @@ const NotificationBase = ({
 const Notification: React.FC = ({ children }) => {
   const [notification, setNotification] = useState<NotificationProps>({
     text: "",
+    type: "success",
   })
 
   const [showCreatedAdd, setShowCreatedAdd] = useState<boolean>(false)

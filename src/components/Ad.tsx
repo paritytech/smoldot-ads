@@ -6,6 +6,7 @@ import ChatBubbleIcon from "@material-ui/icons/ChatBubble"
 import { useAd } from "../services"
 
 import { useActiveAccount } from "../services/accounts"
+import { makeEllipsis } from "../utils"
 
 interface Props {
   id: number
@@ -144,11 +145,11 @@ const Ad: React.FunctionComponent<Props> = ({
               theme="polkadot"
               value={ad.author}
               onCopy={() => {
-                console.log("copy")
+                return
               }}
             />
             <Typography variant="body2" className={classes.author}>
-              {ad.author}
+              {makeEllipsis(ad.author)}
             </Typography>
           </Box>
         </Box>

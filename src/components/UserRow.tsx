@@ -45,7 +45,7 @@ export const UserRow: React.FC = () => {
           theme="polkadot"
           value={activeAccount.address}
           onCopy={() => {
-            console.log("copy")
+            return
           }}
         />
         <Typography variant="body2" className={classes.userName}>
