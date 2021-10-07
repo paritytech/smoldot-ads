@@ -84,17 +84,20 @@ export const tags$ = combineKeys(adIds$, adTagsDeltas$).pipe(
 // const tags$ = adzQuery('tags').pipe(shareLatest())
 //
 
-const sortedTags$ = tags$.pipe(
-  map((adIdsByTag) =>
-    [...adIdsByTag]
-      .map(([tag, ads]) => ({
-        tag,
-        nAds: ads.size,
-      }))
-      .sort((a, b) => b.nAds - a.nAds)
-      .map(({ tag }) => tag),
+const [useSortedTags, sortedTags$] = bind(
+  tags$.pipe(
+    map((adIdsByTag) =>
+      [...adIdsByTag]
+        .map(([tag, ads]) => ({
+          tag,
+          nAds: ads.size,
+        }))
+        .sort((a, b) => b.nAds - a.nAds)
+        .map(({ tag }) => tag),
+    ),
   ),
 )
+export { useSortedTags }
 
 export const [useAdIdsByTag, getAdIdsByTag$] = bind((tag: string) =>
   tags$.pipe(

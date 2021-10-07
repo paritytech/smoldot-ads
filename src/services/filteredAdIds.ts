@@ -185,15 +185,18 @@ const tagsAdsIdx$ = selectedTags$.pipe(
     selectedTags.length > 0
       ? tags$.pipe(
           map((tags) => {
-            let result = new Set<number>()
-            tags.forEach((idxs) => {
-              result = new Set([...result, ...idxs])
-            })
+            const filteredTags = selectedTags
+              .map((tag) => tags.get(tag))
+              .filter((adIdxs): adIdxs is Set<number> => !!adIdxs)
 
-            return result
+            return filteredTags.length === 0
+              ? new Set<number>()
+              : filteredTags.reduce(
+                  (acc, current) => new Set([...acc, ...current]),
+                )
           }),
         )
-      : [null],
+      : [new Set<number>()],
   ),
 )
 
@@ -201,9 +204,9 @@ export const [useFilteredAds] = bind(
   combineLatest([userAdIdx$, tagsAdsIdx$]).pipe(
     map(([userIdxs, tagIdxs]) => {
       const result = [...userIdxs].sort((a, b) => b - a)
-      return tagIdxs === null
-        ? result
-        : result.filter((idx) => tagIdxs.has(idx))
+      return tagIdxs.size > 0
+        ? result.filter((idx) => tagIdxs.has(idx))
+        : result
     }),
   ),
   [],
