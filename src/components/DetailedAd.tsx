@@ -78,6 +78,12 @@ const useStyles = makeStyles<Theme>(() => ({
     fontSize: "14px",
     margin: "0 9px 0",
   },
+  acceptApplicant: {
+    color: "#8B31B6",
+    fontWeight: 500,
+    fontSize: "14px",
+    margin: "0 9px 0",
+  },
   pointer: {
     cursor: "pointer",
   },
@@ -220,20 +226,14 @@ const AdComment: React.FC<{
             className={classes.pointer}
             onClick={() => {
               selectApplicant(adIdx, author).then(
-                (k) => {
-                  console.log("Ok we select the applicant", k)
-                  deleteAd(adIdx).then(
-                    () => {
-                      appCtx.setNotification({
-                        title: "Applicant selected",
-                        text: `Applicant ${makeEllipsis(author)} was selected.`,
-                        show: !appCtx.notification.show,
-                        type: "success",
-                        autoClose: 3000,
-                      })
-                    },
-                    (e) => console.log("error", e),
-                  )
+                () => {
+                  appCtx.setNotification({
+                    title: "Applicant selected",
+                    text: `Applicant ${makeEllipsis(author)} was selected.`,
+                    show: !appCtx.notification.show,
+                    type: "success",
+                    autoClose: 3000,
+                  })
                 },
                 (e) => {
                   appCtx.setNotification({
@@ -246,7 +246,7 @@ const AdComment: React.FC<{
               )
             }}
           >
-            <CheckCircleIcon className={classes.bubble} />
+            <CheckCircleIcon className={classes.acceptApplicant} />
           </Box>
         )}
       </Box>
