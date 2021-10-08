@@ -8,6 +8,7 @@ import DetailedAd from "../components/DetailedAd"
 import { AppContext } from "../contexts/AppContext"
 import CreateAd from "../components/CreateAd"
 import { useFilteredAds } from "../services/filteredAdIds"
+import { useIsApiReady } from "../services"
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -19,12 +20,26 @@ const useStyles = makeStyles(() =>
       overflowY: "auto",
       height: "90vh",
     },
+    loading: {
+      position: "relative",
+      top: "20vh",
+      left: "30vw",
+      borderRadius: "8px",
+      height: "100%",
+      background: "#556068",
+      color: "#fff",
+      fontWeight: 600,
+      padding: "24px 32px",
+      fontSize: "17px",
+    },
   }),
 )
 
 const Container = () => {
   const classes = useStyles()
   const appCtx = useContext(AppContext)
+  const isApiReady = useIsApiReady()
+
   const [selectedId, setSelectedId] = useState<number | null>(null)
 
   const sortedAddIds = useFilteredAds()
@@ -33,7 +48,7 @@ const Container = () => {
     setSelectedId(null)
   }
 
-  return (
+  return isApiReady ? (
     <Grid item container className={classes.main} sm={9} md={10}>
       <Grid item xs={9}>
         {appCtx.showCreatedAdd && <CreateAd />}
@@ -65,6 +80,8 @@ const Container = () => {
         </Grid>
       </Grid>
     </Grid>
+  ) : (
+    <div className={classes.loading}>Loading...</div>
   )
 }
 
