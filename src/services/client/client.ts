@@ -25,7 +25,7 @@ import { AccountType, activeAccount$ } from "../accounts"
 import { ApiPromise, WsProvider } from "@polkadot/api"
 
 const { types } = definitions
-const DEFAULT_PROVIDER = "ws://127.0.0.1:9944"
+const DEFAULT_PROVIDER = "ws://127.0.0.1:9944" // "wss://adz-rpc.parity.io"
 
 const [providerChange$, changeProvider] = createSignal<string>()
 export { changeProvider }

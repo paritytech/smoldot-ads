@@ -4,6 +4,7 @@ import {
   useActiveAccount,
   useAccountBalance,
   useAccounts,
+  useIsApiReady,
 } from "../../services"
 import Select from "@material-ui/core/Select"
 import MenuItem from "@material-ui/core/MenuItem"
@@ -71,50 +72,45 @@ export const CurrentUser: React.FC = () => {
   const accounts = useAccounts()
   const balance = useAccountBalance()
   const activeAccount = useActiveAccount().payload
+  const isApiReady = useIsApiReady()
 
-  return (
-    activeAccount && (
-      <Box display="flex" alignItems="center" className={classes.boxControl}>
-        <span className={classes.accountBalance}>{balance}</span>
-        <FormControl variant="outlined" className={classes.formControl}>
-          <MySelect
-            labelId="demo-simple-select-outlined-label"
-            id="demo-simple-select-outlined"
-            value={activeAccount.address}
-            onChange={onChange}
-          >
-            {Object.values(accounts).map((account) => {
-              const { address, meta } = account.payload
-              const displayName = capitalize((meta as any).name)
-              return (
-                <MenuItem
-                  className={classes.item}
-                  key={address}
-                  value={address}
-                >
-                  <Box display="flex" alignItems="center">
-                    <Identicon
-                      className={classes.identIcon}
-                      size={18}
-                      theme="polkadot"
-                      value={address}
-                      onCopy={() => {
-                        return
-                      }}
-                    />
-                    <Box>
-                      <span className={classes.accountName}>{displayName}</span>
-                      <span className={classes.accountAddress}>
-                        {makeEllipsis(address)}
-                      </span>
-                    </Box>
+  return isApiReady && activeAccount ? (
+    <Box display="flex" alignItems="center" className={classes.boxControl}>
+      <span className={classes.accountBalance}>{balance}</span>
+      <FormControl variant="outlined" className={classes.formControl}>
+        <MySelect
+          labelId="demo-simple-select-outlined-label"
+          id="demo-simple-select-outlined"
+          value={activeAccount.address}
+          onChange={onChange}
+        >
+          {Object.values(accounts).map((account) => {
+            const { address, meta } = account.payload
+            const displayName = capitalize((meta as any).name)
+            return (
+              <MenuItem className={classes.item} key={address} value={address}>
+                <Box display="flex" alignItems="center">
+                  <Identicon
+                    className={classes.identIcon}
+                    size={18}
+                    theme="polkadot"
+                    value={address}
+                    onCopy={() => {
+                      return
+                    }}
+                  />
+                  <Box>
+                    <span className={classes.accountName}>{displayName}</span>
+                    <span className={classes.accountAddress}>
+                      {makeEllipsis(address)}
+                    </span>
                   </Box>
-                </MenuItem>
-              )
-            })}
-          </MySelect>
-        </FormControl>
-      </Box>
-    )
-  )
+                </Box>
+              </MenuItem>
+            )
+          })}
+        </MySelect>
+      </FormControl>
+    </Box>
+  ) : null
 }

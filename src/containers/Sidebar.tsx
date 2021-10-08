@@ -10,6 +10,7 @@ import {
   MenuList,
   MenuItem,
   ListItemIcon,
+  Link,
 } from "@material-ui/core"
 import { useIsApiReady } from "../services/client"
 import {
@@ -105,6 +106,7 @@ const Sidebar = () => {
             root: classes.menuItemRoot,
             selected: classes.menuItemSelected,
           }}
+          disabled={!isApiReady}
           onClick={() => {
             onChangeSelectedFilter(AdFilters.All)
           }}
@@ -123,6 +125,7 @@ const Sidebar = () => {
       </Box>
       <MenuList>
         <MenuItem
+          disabled={!isApiReady}
           classes={{
             root: classes.menuItemRoot,
             selected: classes.menuItemSelected,
@@ -143,6 +146,7 @@ const Sidebar = () => {
           </Typography>
         </MenuItem>
         <MenuItem
+          disabled={!isApiReady}
           classes={{
             root: classes.menuItemRoot,
             selected: classes.menuItemSelected,
@@ -183,17 +187,30 @@ const Sidebar = () => {
         onClick={() => {
           appCtx.setShowCreatedAdd(true)
         }}
+        disabled={!isApiReady}
       >
         New Post
       </Button>
 
-      <MenuItem classes={{ root: classes.helpGrid }}>
+      <MenuItem
+        classes={{ root: classes.helpGrid }}
+        onClick={() => {
+          onChangeSelectedFilter(AdFilters.MyComments)
+        }}
+      >
         <ListItemIcon className={classes.menuIcon}>
           <ForumIcon fontSize="small" />
         </ListItemIcon>
-        <Typography variant="body1" className={classes.links}>
+        <Link
+          color="textSecondary"
+          target="_blank"
+          rel="noreferrer"
+          variant="body2"
+          href="https://github.com/paritytech/substrate-connect/issues"
+          className={classes.links}
+        >
           Help & Feedback
-        </Typography>
+        </Link>
       </MenuItem>
     </Grid>
   )
