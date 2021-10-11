@@ -88,7 +88,3 @@ export type AdzApi = ApiPromise & {
     adz: AdzQueries
   }
 }
-
-let test: ApiPromise
-
-test.tx.assets.transfer("", 10).signAndSend("", (e) => {})
