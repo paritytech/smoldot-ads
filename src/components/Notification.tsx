@@ -34,13 +34,14 @@ const useStyles = makeStyles((theme) => ({
   },
   paperBox: {
     opacity: 1,
-    minWidth: "350px",
+    width: "350px",
     minHeight: "100px",
     position: "fixed",
     right: "10px",
     top: "10px",
     padding: "0 10px",
     zIndex: 9999,
+    wordBreak: "break-all",
   },
   closeNotification: {
     position: "absolute",

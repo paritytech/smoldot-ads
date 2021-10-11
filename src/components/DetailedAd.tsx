@@ -27,6 +27,7 @@ import {
 import { isEmptyText, makeEllipsis } from "../utils"
 import { UserRow } from "./UserRow"
 import { AppContext } from "../contexts/AppContext"
+import { DEFAULT_PROVIDER } from "../services/client/client"
 
 const useStyles = makeStyles<Theme>(() => ({
   row: {
@@ -225,25 +226,26 @@ const AdComment: React.FC<{
             alignItems="center"
             className={classes.pointer}
             onClick={() => {
-              selectApplicant(adIdx, author) /*.then(
-                () => {
-                  appCtx.setNotification({
-                    title: "Applicant selected",
-                    text: `Applicant ${makeEllipsis(author)} was selected.`,
-                    show: !appCtx.notification.show,
-                    type: "success",
-                    autoClose: 3000,
-                  })
-                },
-                (e) => {
-                  appCtx.setNotification({
-                    title: "Applicant selected error",
-                    type: "error",
-                    text: "Error:".concat(e),
-                    show: !appCtx.notification.show,
-                  })
-                },
-                )*/
+              try {
+                selectApplicant(adIdx, author, (res) => {
+                  if (res.status.isInBlock) {
+                    appCtx.setNotification({
+                      title: "Applicant selected",
+                      text: `Applicant ${makeEllipsis(author)} was selected.`,
+                      show: !appCtx.notification.show,
+                      type: "success",
+                      autoClose: 3000,
+                    })
+                  }
+                })
+              } catch (err) {
+                appCtx.setNotification({
+                  title: "Error creating Ad",
+                  type: "error",
+                  text: "Error:".concat((err as any)?.message),
+                  show: true,
+                })
+              }
             }}
           >
             <CheckCircleIcon className={classes.acceptApplicant} />
@@ -412,7 +414,32 @@ const DetailedAd: React.FunctionComponent<Props> = ({ id, onClick }) => {
           {isEditing ? (
             <CommentForm
               onSubmit={(body) => {
-                createComment(id, body)
+                try {
+                  createComment(id, body, (res) => {
+                    if (res.status.isInBlock) {
+                      appCtx.setNotification({
+                        title: "Comment Submitted",
+                        text: `Block hash:: ${res.status.asInBlock}.`,
+                        show: true,
+                        type: "success",
+                        buttonAction: () => {
+                          window.open(
+                            `https://polkadot.js.org/apps/?rpc=${DEFAULT_PROVIDER}#/explorer/query/${res.status.asInBlock}`,
+                            "_blank",
+                          )
+                        },
+                        buttonText: "See transaction",
+                      })
+                    }
+                  })
+                } catch (err) {
+                  appCtx.setNotification({
+                    title: "Error replying with comment",
+                    type: "error",
+                    text: "Error:".concat((err as any)?.message),
+                    show: true,
+                  })
+                }
                 setIsEditing(false)
               }}
             />

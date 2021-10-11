@@ -26,7 +26,8 @@ import adz from "../../assets/adz.json"
 // import { ApiPromise, WsProvider } from "@polkadot/api"
 
 const { types } = definitions
-const DEFAULT_PROVIDER = "ws://127.0.0.1:9944" // "wss://adz-rpc.parity.io"
+export const DEFAULT_PROVIDER = "wss://adz-rpc.parity.io"
+// export const DEFAULT_PROVIDER = "ws://127.0.0.1:9944"
 
 const [providerChange$, changeProvider] = createSignal<string>()
 export { changeProvider }
