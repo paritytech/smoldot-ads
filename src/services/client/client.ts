@@ -1,4 +1,4 @@
-import { firstValueFrom, Observable } from "rxjs"
+import { Observable } from "rxjs"
 import {
   startWith,
   switchMap,
@@ -19,6 +19,7 @@ import {
 } from "./Adz"
 import { ExcludeLast, observableFromPolka, OnlyLast } from "../utils"
 import { AccountType, activeAccount$ } from "../accounts"
+import type { ISubmittableResult } from "@polkadot/types/types"
 
 import { Detector } from "@substrate/connect"
 import adz from "../../assets/adz.json"
@@ -58,28 +59,26 @@ type MutationReturn<T extends PolkaMutation<any[], any>> =
 export const adzMutation = <K extends keyof AdzMutations>(
   key: K,
   ...args: MutationArgs<AdzMutations[K]>
-): Promise<MutationReturn<AdzMutations[K]>> =>
-  firstValueFrom(
-    api$.pipe(
-      withLatestFrom(activeAccount$),
-      switchMap(([api, author]) =>
-        observableFromPolka<any>((next) => {
-          const instance = (
-            api.tx.adz[key] as unknown as PolkaMutation<
-              MutationArgs<AdzMutations[K]>,
-              MutationReturn<AdzMutations[K]>
-            >
-          )(...args)
+): Observable<ISubmittableResult> =>
+  api$.pipe(
+    withLatestFrom(activeAccount$),
+    switchMap(([api, author]) =>
+      observableFromPolka<ISubmittableResult>((next) => {
+        const instance = (
+          api.tx.adz[key] as unknown as PolkaMutation<
+            MutationArgs<AdzMutations[K]>,
+            MutationReturn<AdzMutations[K]>
+          >
+        )(...args)
 
-          return author.type === AccountType.InjectedAccountWithMeta
-            ? instance.signAndSend(
-                author.payload.address,
-                { signer: author.payload.signer },
-                next,
-              )
-            : instance.signAndSend(author.payload, next)
-        }).pipe(skipWhile(({ status }) => !status.isFinalized)),
-      ),
+        return author.type === AccountType.InjectedAccountWithMeta
+          ? instance.signAndSend(
+              author.payload.address,
+              { signer: author.payload.signer },
+              next,
+            )
+          : instance.signAndSend(author.payload, next)
+      }).pipe(skipWhile((e) => e.status.isFinalized)),
     ),
   )
 

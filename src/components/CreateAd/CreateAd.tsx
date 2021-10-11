@@ -136,7 +136,7 @@ const CreateAd: React.FunctionComponent = () => {
           }
           className={classes.postButton}
           onClick={() => {
-            createAd(title, description, selectedTags).then(
+            createAd(title, description, selectedTags) /*.then(
               () => {
                 appCtx.setNotification({
                   title: "Created Ad",
@@ -156,6 +156,7 @@ const CreateAd: React.FunctionComponent = () => {
               },
             )
             appCtx.setShowCreatedAdd(false)
+                                                       */
           }}
         >
           Post

@@ -2,6 +2,7 @@ import { ApiPromise } from "@polkadot/api"
 import { Signer } from "@polkadot/api/types"
 import { KeyringPair } from "@polkadot/keyring/types"
 import { MoveFirstToTheEnd } from "../utils"
+import type { ISubmittableResult } from "@polkadot/types/types"
 
 type MoveFirstArgumentToTheEnd<T extends (...args: any) => any> = T extends (
   ...args: infer A
@@ -28,7 +29,7 @@ export interface SignAndSend<T> {
   signAndSend: SignAndSendFn<T>
 }
 
-export type PolkaMutation<A extends any[], R = RawData> = (
+export type PolkaMutation<A extends any[], R = ISubmittableResult> = (
   ...args: A
 ) => SignAndSend<R>
 
