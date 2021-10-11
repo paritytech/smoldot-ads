@@ -225,7 +225,7 @@ const AdComment: React.FC<{
             alignItems="center"
             className={classes.pointer}
             onClick={() => {
-              selectApplicant(adIdx, author).then(
+              selectApplicant(adIdx, author) /*.then(
                 () => {
                   appCtx.setNotification({
                     title: "Applicant selected",
@@ -243,7 +243,7 @@ const AdComment: React.FC<{
                     show: !appCtx.notification.show,
                   })
                 },
-              )
+                )*/
             }}
           >
             <CheckCircleIcon className={classes.acceptApplicant} />
@@ -382,7 +382,7 @@ const DetailedAd: React.FunctionComponent<Props> = ({ id, onClick }) => {
               alignItems="center"
               className={classes.pointer}
               onClick={() => {
-                deleteAd(id).then(
+                deleteAd(id) /*.then(
                   () => {
                     appCtx.setNotification({
                       title: "Deleted Ad",
@@ -400,7 +400,7 @@ const DetailedAd: React.FunctionComponent<Props> = ({ id, onClick }) => {
                       show: !appCtx.notification.show,
                     })
                   },
-                )
+                  )*/
               }}
             >
               <DeleteForever className={classes.bubble} />

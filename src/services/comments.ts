@@ -1,5 +1,6 @@
+import type { ISubmittableResult } from "@polkadot/types/types"
 import { bind } from "@react-rxjs/core"
-import { map } from "rxjs"
+import { map, noop } from "rxjs"
 import { adzMutation, adzQuery } from "./client"
 import { epochToDate, persistLocally } from "./utils"
 
@@ -11,11 +12,17 @@ export interface Comment {
   created: Date
 }
 
-export const createComment = (adIdx: number, body: string) =>
-  adzMutation("createComment", body, adIdx)
+export const createComment = (
+  adIdx: number,
+  body: string,
+  cb?: (result: ISubmittableResult) => void,
+) => adzMutation("createComment", body, adIdx).subscribe(cb ?? noop)
 
-export const deleteComment = (adIdx: number, commentIdx: number) =>
-  adzMutation("deleteComment", adIdx, commentIdx)
+export const deleteComment = (
+  adIdx: number,
+  commentIdx: number,
+  cb?: (result: ISubmittableResult) => void,
+) => adzMutation("deleteComment", adIdx, commentIdx).subscribe(cb ?? noop)
 
 export const [useComment, comment$] = bind(
   (adIdx: number, commentIdx: number) =>

@@ -1,5 +1,6 @@
+import type { ISubmittableResult } from "@polkadot/types/types"
 import { bind, shareLatest } from "@react-rxjs/core"
-import { map } from "rxjs"
+import { map, noop } from "rxjs"
 import { adzMutation, adzQuery } from "./client"
 import { epochToDate, persistLocally } from "./utils"
 
@@ -44,8 +45,12 @@ export const [useAd, ad$] = bind((adIdx: number) =>
   ),
 )
 
-export const createAd = (title: string, content: string, tags: string[]) =>
-  adzMutation("createAd", title, content, tags)
+export const createAd = (
+  title: string,
+  content: string,
+  tags: string[],
+  cb?: (result: ISubmittableResult) => void,
+) => adzMutation("createAd", title, content, tags).subscribe(cb ?? noop)
 
 export const deleteAd = (adIdx: number) => adzMutation("deleteAd", adIdx)
 
@@ -54,7 +59,11 @@ export const updateAd = (
   title: string,
   content: string,
   tags: string[],
-) => adzMutation("updateAd", adIdx, title, content, tags)
+  cb?: (result: ISubmittableResult) => void,
+) => adzMutation("updateAd", adIdx, title, content, tags).subscribe(cb ?? noop)
 
-export const selectApplicant = (adIdx: number, applicant: string) =>
-  adzMutation("selectApplicant", adIdx, applicant)
+export const selectApplicant = (
+  adIdx: number,
+  applicant: string,
+  cb?: (result: ISubmittableResult) => void,
+) => adzMutation("selectApplicant", adIdx, applicant).subscribe(cb ?? noop)
