@@ -11,8 +11,8 @@ import CloseIcon from "@material-ui/icons/Close"
 import { CSSTransition } from "react-transition-group"
 import { AppContext } from "../contexts/AppContext"
 import CheckCircleIcon from "@material-ui/icons/CheckCircle"
+import InfoIcon from "@material-ui/icons/Info"
 import ErrorIcon from "@material-ui/icons/Error"
-import { red } from "@material-ui/core/colors"
 
 const useStyles = makeStyles((theme) => ({
   ".notification-enter": {
@@ -64,6 +64,9 @@ const useStyles = makeStyles((theme) => ({
   },
   success: {
     color: "green",
+  },
+  info: {
+    color: "yellow",
   },
 }))
 
@@ -121,8 +124,10 @@ const NotificationBase = ({
           <Typography variant="body1" className={classes.title}>
             {type === "success" ? (
               <CheckCircleIcon className={classes.success} />
-            ) : (
+            ) : type === "error" ? (
               <ErrorIcon className={classes.error} />
+            ) : (
+              <InfoIcon className={classes.info} />
             )}
             {title}
           </Typography>

@@ -230,11 +230,17 @@ const AdComment: React.FC<{
                 selectApplicant(adIdx, author, (res) => {
                   if (res.status.isInBlock) {
                     appCtx.setNotification({
-                      title: "Applicant selected",
+                      title: "Select Applicant",
                       text: `Applicant ${makeEllipsis(author)} was selected.`,
-                      show: !appCtx.notification.show,
+                      show: true,
                       type: "success",
-                      autoClose: 3000,
+                    })
+                  } else {
+                    appCtx.setNotification({
+                      title: "Select Applicant",
+                      text: `Selecting applicant ${makeEllipsis(author)}`,
+                      show: true,
+                      type: "info",
                     })
                   }
                 })
@@ -384,25 +390,32 @@ const DetailedAd: React.FunctionComponent<Props> = ({ id, onClick }) => {
               alignItems="center"
               className={classes.pointer}
               onClick={() => {
-                deleteAd(id) /*.then(
-                  () => {
-                    appCtx.setNotification({
-                      title: "Deleted Ad",
-                      text: "An ad was deleted",
-                      show: !appCtx.notification.show,
-                      type: "success",
-                      autoClose: 3000,
-                    })
-                  },
-                  (e) => {
-                    appCtx.setNotification({
-                      title: "Deleted Ad",
-                      type: "error",
-                      text: "Error:".concat(e),
-                      show: !appCtx.notification.show,
-                    })
-                  },
-                  )*/
+                try {
+                  deleteAd(id, (res) => {
+                    if (res.status.isInBlock) {
+                      appCtx.setNotification({
+                        title: "Delete Ad",
+                        text: "An ad was deleted",
+                        show: true,
+                        type: "success",
+                      })
+                    } else {
+                      appCtx.setNotification({
+                        title: "Delete Ad",
+                        text: "Deleting...",
+                        show: true,
+                        type: "info",
+                      })
+                    }
+                  })
+                } catch (err) {
+                  appCtx.setNotification({
+                    title: "Deleted Ad",
+                    type: "error",
+                    text: "Error:".concat((err as any)?.message),
+                    show: true,
+                  })
+                }
               }}
             >
               <DeleteForever className={classes.bubble} />
@@ -418,7 +431,7 @@ const DetailedAd: React.FunctionComponent<Props> = ({ id, onClick }) => {
                   createComment(id, body, (res) => {
                     if (res.status.isInBlock) {
                       appCtx.setNotification({
-                        title: "Comment Submitted",
+                        title: "New Comment Submitted",
                         text: `Block hash:: ${res.status.asInBlock}.`,
                         show: true,
                         type: "success",
@@ -429,6 +442,13 @@ const DetailedAd: React.FunctionComponent<Props> = ({ id, onClick }) => {
                           )
                         },
                         buttonText: "See transaction",
+                      })
+                    } else {
+                      appCtx.setNotification({
+                        title: "New comment",
+                        text: `Submiting...`,
+                        show: true,
+                        type: "info",
                       })
                     }
                   })
