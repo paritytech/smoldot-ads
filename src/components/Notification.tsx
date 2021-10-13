@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
     color: "green",
   },
   info: {
-    color: "yellow",
+    color: "greenyellow",
   },
 }))
 
