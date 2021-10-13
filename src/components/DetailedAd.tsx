@@ -201,10 +201,6 @@ const AdComment: React.FC<{
 
   const { author } = comment
 
-  console.log("author", author)
-  console.log("ad author", adAuthor)
-  console.log("activeAccount.address", activeAccount.address)
-
   return (
     <Grid className={classes.commentBox}>
       <Box component="div" display="flex" alignItems="center">

@@ -139,7 +139,6 @@ const CreateAd: React.FunctionComponent = () => {
           onClick={() => {
             try {
               createAd(title, description, selectedTags, (res) => {
-                console.log("res", res.status.hash.toHuman())
                 if (res.status.isInBlock) {
                   appCtx.setNotification({
                     title: "Ad Submitted",
