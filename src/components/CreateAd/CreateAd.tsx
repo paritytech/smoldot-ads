@@ -139,6 +139,7 @@ const CreateAd: React.FunctionComponent = () => {
           onClick={() => {
             try {
               createAd(title, description, selectedTags, (res) => {
+                console.log("res", res.status.hash.toHuman())
                 if (res.status.isInBlock) {
                   appCtx.setNotification({
                     title: "Ad Submitted",
@@ -154,6 +155,20 @@ const CreateAd: React.FunctionComponent = () => {
                     buttonText: "See transaction",
                   })
                 }
+                appCtx.setNotification({
+                  title: "Ad Submitting",
+                  text: `Block hash:: ${res.status.hash.toHuman()}.`,
+                  show: true,
+                  type: "info",
+                  buttonAction: () => {
+                    window.open(
+                      `https://polkadot.js.org/apps/?rpc=${DEFAULT_PROVIDER}#/explorer/query/${res.status.hash.toHuman()}`,
+                      "_blank",
+                    )
+                  },
+                  buttonText: "See transaction",
+                  autoClose: 2000,
+                })
               })
             } catch (err) {
               appCtx.setNotification({

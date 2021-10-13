@@ -201,6 +201,10 @@ const AdComment: React.FC<{
 
   const { author } = comment
 
+  console.log("author", author)
+  console.log("ad author", adAuthor)
+  console.log("activeAccount.address", activeAccount.address)
+
   return (
     <Grid className={classes.commentBox}>
       <Box component="div" display="flex" alignItems="center">
@@ -235,7 +239,7 @@ const AdComment: React.FC<{
                       show: true,
                       type: "success",
                     })
-                  } else {
+                  } else if (res.status.isReady) {
                     appCtx.setNotification({
                       title: "Select Applicant",
                       text: `Selecting applicant ${makeEllipsis(author)}`,
@@ -254,7 +258,9 @@ const AdComment: React.FC<{
               }
             }}
           >
-            <CheckCircleIcon className={classes.acceptApplicant} />
+            {activeAccount.address === adAuthor && adAuthor !== author && (
+              <CheckCircleIcon className={classes.acceptApplicant} />
+            )}
           </Box>
         )}
       </Box>
@@ -443,7 +449,7 @@ const DetailedAd: React.FunctionComponent<Props> = ({ id, onClick }) => {
                         },
                         buttonText: "See transaction",
                       })
-                    } else {
+                    } else if (res.status.isReady) {
                       appCtx.setNotification({
                         title: "New comment",
                         text: `Submiting...`,
