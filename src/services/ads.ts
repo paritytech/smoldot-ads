@@ -52,7 +52,10 @@ export const createAd = (
   cb?: (result: ISubmittableResult) => void,
 ) => adzMutation("createAd", title, content, tags).subscribe(cb ?? noop)
 
-export const deleteAd = (adIdx: number) => adzMutation("deleteAd", adIdx)
+export const deleteAd = (
+  adIdx: number,
+  cb?: (result: ISubmittableResult) => void,
+) => adzMutation("deleteAd", adIdx).subscribe(cb ?? noop)
 
 export const updateAd = (
   adIdx: number,

@@ -27,6 +27,7 @@ import {
 import { isEmptyText, makeEllipsis } from "../utils"
 import { UserRow } from "./UserRow"
 import { AppContext } from "../contexts/AppContext"
+import { DEFAULT_PROVIDER } from "../services/client/client"
 
 const useStyles = makeStyles<Theme>(() => ({
   row: {
@@ -225,28 +226,37 @@ const AdComment: React.FC<{
             alignItems="center"
             className={classes.pointer}
             onClick={() => {
-              selectApplicant(adIdx, author) /*.then(
-                () => {
-                  appCtx.setNotification({
-                    title: "Applicant selected",
-                    text: `Applicant ${makeEllipsis(author)} was selected.`,
-                    show: !appCtx.notification.show,
-                    type: "success",
-                    autoClose: 3000,
-                  })
-                },
-                (e) => {
-                  appCtx.setNotification({
-                    title: "Applicant selected error",
-                    type: "error",
-                    text: "Error:".concat(e),
-                    show: !appCtx.notification.show,
-                  })
-                },
-                )*/
+              try {
+                selectApplicant(adIdx, author, (res) => {
+                  if (res.status.isInBlock) {
+                    appCtx.setNotification({
+                      title: "Select Applicant",
+                      text: `Applicant ${makeEllipsis(author)} was selected.`,
+                      show: true,
+                      type: "success",
+                    })
+                  } else if (res.status.isReady) {
+                    appCtx.setNotification({
+                      title: "Select Applicant",
+                      text: `Selecting applicant ${makeEllipsis(author)}`,
+                      show: true,
+                      type: "info",
+                    })
+                  }
+                })
+              } catch (err) {
+                appCtx.setNotification({
+                  title: "Error creating Ad",
+                  type: "error",
+                  text: "Error:".concat((err as any)?.message),
+                  show: true,
+                })
+              }
             }}
           >
-            <CheckCircleIcon className={classes.acceptApplicant} />
+            {activeAccount.address === adAuthor && adAuthor !== author && (
+              <CheckCircleIcon className={classes.acceptApplicant} />
+            )}
           </Box>
         )}
       </Box>
@@ -382,25 +392,32 @@ const DetailedAd: React.FunctionComponent<Props> = ({ id, onClick }) => {
               alignItems="center"
               className={classes.pointer}
               onClick={() => {
-                deleteAd(id) /*.then(
-                  () => {
-                    appCtx.setNotification({
-                      title: "Deleted Ad",
-                      text: "An ad was deleted",
-                      show: !appCtx.notification.show,
-                      type: "success",
-                      autoClose: 3000,
-                    })
-                  },
-                  (e) => {
-                    appCtx.setNotification({
-                      title: "Deleted Ad",
-                      type: "error",
-                      text: "Error:".concat(e),
-                      show: !appCtx.notification.show,
-                    })
-                  },
-                  )*/
+                try {
+                  deleteAd(id, (res) => {
+                    if (res.status.isInBlock) {
+                      appCtx.setNotification({
+                        title: "Delete Ad",
+                        text: "An ad was deleted",
+                        show: true,
+                        type: "success",
+                      })
+                    } else {
+                      appCtx.setNotification({
+                        title: "Delete Ad",
+                        text: "Deleting...",
+                        show: true,
+                        type: "info",
+                      })
+                    }
+                  })
+                } catch (err) {
+                  appCtx.setNotification({
+                    title: "Deleted Ad",
+                    type: "error",
+                    text: "Error:".concat((err as any)?.message),
+                    show: true,
+                  })
+                }
               }}
             >
               <DeleteForever className={classes.bubble} />
@@ -412,7 +429,39 @@ const DetailedAd: React.FunctionComponent<Props> = ({ id, onClick }) => {
           {isEditing ? (
             <CommentForm
               onSubmit={(body) => {
-                createComment(id, body)
+                try {
+                  createComment(id, body, (res) => {
+                    if (res.status.isInBlock) {
+                      appCtx.setNotification({
+                        title: "New Comment Submitted",
+                        text: `Block hash:: ${res.status.asInBlock}.`,
+                        show: true,
+                        type: "success",
+                        buttonAction: () => {
+                          window.open(
+                            `https://polkadot.js.org/apps/?rpc=${DEFAULT_PROVIDER}#/explorer/query/${res.status.asInBlock}`,
+                            "_blank",
+                          )
+                        },
+                        buttonText: "See transaction",
+                      })
+                    } else if (res.status.isReady) {
+                      appCtx.setNotification({
+                        title: "New comment",
+                        text: `Submiting...`,
+                        show: true,
+                        type: "info",
+                      })
+                    }
+                  })
+                } catch (err) {
+                  appCtx.setNotification({
+                    title: "Error replying with comment",
+                    type: "error",
+                    text: "Error:".concat((err as any)?.message),
+                    show: true,
+                  })
+                }
                 setIsEditing(false)
               }}
             />

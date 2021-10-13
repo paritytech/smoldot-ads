@@ -7,6 +7,7 @@ import { Tags } from "./Tags"
 import { isEmptyText } from "../../utils"
 import { createAd, useAccountBalance } from "../../services"
 import { UserRow } from "../UserRow"
+import { DEFAULT_PROVIDER } from "../../services/client/client"
 
 const useStyles = makeStyles({
   row: {
@@ -136,27 +137,47 @@ const CreateAd: React.FunctionComponent = () => {
           }
           className={classes.postButton}
           onClick={() => {
-            createAd(title, description, selectedTags) /*.then(
-              () => {
+            try {
+              createAd(title, description, selectedTags, (res) => {
+                if (res.status.isInBlock) {
+                  appCtx.setNotification({
+                    title: "Ad Submitted",
+                    text: `Block hash:: ${res.status.asInBlock}.`,
+                    show: true,
+                    type: "success",
+                    buttonAction: () => {
+                      window.open(
+                        `https://polkadot.js.org/apps/?rpc=${DEFAULT_PROVIDER}#/explorer/query/${res.status.asInBlock}`,
+                        "_blank",
+                      )
+                    },
+                    buttonText: "See transaction",
+                  })
+                }
                 appCtx.setNotification({
-                  title: "Created Ad",
-                  text: "A new ad was just created",
-                  show: !appCtx.notification.show,
-                  type: "success",
-                  autoClose: 3000,
+                  title: "Ad Submitting",
+                  text: `Block hash:: ${res.status.hash.toHuman()}.`,
+                  show: true,
+                  type: "info",
+                  buttonAction: () => {
+                    window.open(
+                      `https://polkadot.js.org/apps/?rpc=${DEFAULT_PROVIDER}#/explorer/query/${res.status.hash.toHuman()}`,
+                      "_blank",
+                    )
+                  },
+                  buttonText: "See transaction",
+                  autoClose: 2000,
                 })
-              },
-              (e) => {
-                appCtx.setNotification({
-                  title: "Created Ad",
-                  type: "error",
-                  text: "Error:".concat(e),
-                  show: !appCtx.notification.show,
-                })
-              },
-            )
+              })
+            } catch (err) {
+              appCtx.setNotification({
+                title: "Error creating Ad",
+                type: "error",
+                text: "Error:".concat((err as any)?.message),
+                show: true,
+              })
+            }
             appCtx.setShowCreatedAdd(false)
-                                                       */
           }}
         >
           Post
