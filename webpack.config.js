@@ -35,15 +35,13 @@ module.exports = {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
       },
-      // {
-      //   test: /bundle.js$/,
-      //   loader: "string-replace-loader",
-      //   options: {
-      //     multiple: [
-      //       { search: "_", replace: "window.lodash" },
-      //     ],
-      //   },
-      // },
+      {
+        test: /bundle.js$/,
+        loader: "string-replace-loader",
+        options: {
+          multiple: [{ search: "process.env.WS_URL ||", replace: "" }],
+        },
+      },
     ],
   },
   resolve: {
