@@ -48,6 +48,9 @@ module.exports = {
     },
   },
   plugins: [
+    new webpack.DefinePlugin({
+      "process.env.WS_URL": JSON.stringify(undefined),
+    }),
     new HtmlWebpackPlugin({
       template: "./src/index.html",
     }),
