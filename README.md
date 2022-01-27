@@ -11,7 +11,7 @@ Then run `npm start` in order to run the UI.
 Demo can be found here:
 https://ipfs.io/ipfs/QmesuqusRhP3FpppZxJzxpqV2ksTFGawrmbyqHCffg7EDD/
 
-## Run ads demo locally
+# Run ads demo locally
 
 In order to run locally the demo the environment.
 The environment consists from a relay-chain (westend), and a custom [parachain](https://github.com/wanderer/adz).
@@ -26,7 +26,9 @@ git checkout master
 cargo build --release
 ```
 
-### Generate a raw chain spec
+## Raw chain spec and dev accounts
+
+Generate a raw chain spec and run 2 dev accounts. To generate the raw chain spec
 
 `./target/release/polkadot build-spec --chain rococo-local --disable-default-bootnode --raw > rococo-local.json`
 
