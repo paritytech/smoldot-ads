@@ -4,6 +4,7 @@
   "description": "",
   "author": "Parity Team <admin@parity.io>",
   "contributors": [
+    "Josep Sobrepere <josep@parity.io>",
     "Nikolaos Kontakis <nikolaos@parity.io>",
     "Sveta Goldstein <sveta@parity.io>"
   ],
@@ -13,8 +14,9 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rm -rf dist node_modules yarn.",
     "start": "webpack serve --config webpack.config.js",
-    "build": "webpack",
+    "build": "yarn run clean && webpack",
     "typecheck": "tsc -b",
     "typecheck:watch": "tsc -b --watch",
     "format": "prettier --write ."
