@@ -14,9 +14,9 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rm -rf dist node_modules yarn.",
+    "clean": "rm -rf dist node_modules",
     "start": "webpack serve --config webpack.config.js",
-    "build": "yarn run clean && webpack",
+    "build": "webpack",
     "typecheck": "tsc -b",
     "typecheck:watch": "tsc -b --watch",
     "format": "prettier --write ."
