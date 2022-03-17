@@ -21,8 +21,9 @@ import { ExcludeLast, observableFromPolka, OnlyLast } from "../utils"
 import { AccountType, activeAccount$ } from "../accounts"
 import type { ISubmittableResult } from "@polkadot/types/types"
 
-import { Detector } from "@substrate/connect"
+import { createPolkadotJsScClient, WellKnownChain } from "@substrate/connect"
 import adz from "../../assets/adz.json"
+import { ApiPromise } from "@polkadot/api"
 // import { ApiPromise, WsProvider } from "@polkadot/api"
 
 const { types } = definitions
@@ -31,14 +32,20 @@ export const DEFAULT_PROVIDER = "wss://adz-rpc.parity.io"
 
 const [providerChange$, changeProvider] = createSignal<string>()
 export { changeProvider }
+const scClient = createPolkadotJsScClient()
 
 const api$ = providerChange$.pipe(
   startWith(DEFAULT_PROVIDER),
-  switchMap(() => {
-    const detect = new Detector("Classified Ads")
-    return detect.connect("westend", JSON.stringify(adz), {
+  switchMap(async () => {
+    const rococoProvider = await scClient.addWellKnownChain(
+      WellKnownChain.rococo_v2,
+    )
+    await ApiPromise.create({ provider: rococoProvider })
+    const adzApi = await scClient.addChain(JSON.stringify(adz))
+    return (await ApiPromise.create({
+      provider: adzApi,
       types,
-    }) as unknown as Promise<AdzApi>
+    })) as unknown as Promise<AdzApi>
   }),
   // switchMap(
   //   (config) =>
