@@ -38,7 +38,7 @@ const api$ = providerChange$.pipe(
   startWith(DEFAULT_PROVIDER),
   switchMap(async () => {
     const rococoProvider = await scClient.addWellKnownChain(
-      WellKnownChain.rococo_v2,
+      WellKnownChain.rococo_v2_1,
     )
     await ApiPromise.create({ provider: rococoProvider })
     const adzApi = await scClient.addChain(JSON.stringify(adz))
