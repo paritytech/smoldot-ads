@@ -37,10 +37,7 @@ const scClient = createPolkadotJsScClient()
 const api$ = providerChange$.pipe(
   startWith(DEFAULT_PROVIDER),
   switchMap(async () => {
-    const rococoProvider = await scClient.addWellKnownChain(
-      WellKnownChain.rococo_v2_1,
-    )
-    await ApiPromise.create({ provider: rococoProvider })
+    await scClient.addWellKnownChain(WellKnownChain.rococo_v2_1)
     const adzApi = await scClient.addChain(JSON.stringify(adz))
     return (await ApiPromise.create({
       provider: adzApi,
