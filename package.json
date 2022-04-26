@@ -3,8 +3,10 @@
   "version": "0.0.1",
   "description": "",
   "author": "Parity Team <admin@parity.io>",
+  "homepage": "https://paritytech.github.io/smoldot-ads/",
   "contributors": [
     "Nikolaos Kontakis <nikolaos@parity.io>",
+    "Josep Sobrepere <josep@parity.io>",
     "Sveta Goldstein <sveta@parity.io>"
   ],
   "license": "GPL-3.0-only",
@@ -12,6 +14,8 @@
     "last 2 versions"
   ],
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack serve --config webpack.config.js",
     "build": "webpack",
@@ -36,6 +40,7 @@
     "crypto-browserify": "^3.12.0",
     "css-loader": "^6.7.1",
     "eslint": "^8.11.0",
+    "gh-pages": "^3.2.3",
     "html-webpack-plugin": "^5.5.0",
     "jest": "^27.5.1",
     "prettier": "2.6.0",
