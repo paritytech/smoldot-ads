@@ -21,36 +21,32 @@ import { ExcludeLast, observableFromPolka, OnlyLast } from "../utils"
 import { AccountType, activeAccount$ } from "../accounts"
 import type { ISubmittableResult } from "@polkadot/types/types"
 
-import { createPolkadotJsScClient, WellKnownChain } from "@substrate/connect"
+import {
+  ScProvider,
+  WellKnownChain,
+} from "@polkadot/rpc-provider/substrate-connect"
 import adz from "../../assets/adz.json"
 import { ApiPromise } from "@polkadot/api"
-// import { ApiPromise, WsProvider } from "@polkadot/api"
 
 const { types } = definitions
 export const DEFAULT_PROVIDER = "wss://adz-rpc.parity.io"
-// export const DEFAULT_PROVIDER = "ws://127.0.0.1:9944"
 
 const [providerChange$, changeProvider] = createSignal<string>()
 export { changeProvider }
-const scClient = createPolkadotJsScClient()
 
 const api$ = providerChange$.pipe(
   startWith(DEFAULT_PROVIDER),
   switchMap(async () => {
-    await scClient.addWellKnownChain(WellKnownChain.rococo_v2_1)
-    const adzApi = await scClient.addChain(JSON.stringify(adz))
+    const rococoProvider = new ScProvider(WellKnownChain.rococo_v2_1)
+    await rococoProvider.connect()
+    const provider = new ScProvider(JSON.stringify(adz), rococoProvider)
+
+    await provider.connect()
     return (await ApiPromise.create({
-      provider: adzApi,
+      provider,
       types,
     })) as unknown as Promise<AdzApi>
   }),
-  // switchMap(
-  //   (config) =>
-  //     ApiPromise.create({
-  //       provider: new WsProvider(config),
-  //       types,
-  //     }) as unknown as Promise<AdzApi>,
-  // ),
   shareLatest(),
 )
 
