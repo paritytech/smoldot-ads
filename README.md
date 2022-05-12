@@ -7,3 +7,5 @@ After cloning the repo run:
 in order to install all dependencies.
 
 Then run `npm start` in order to run the UI.
+
+Demo can be found [here](https://paritytech.github.io/smoldot-ads/)
