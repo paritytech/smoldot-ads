@@ -1,4 +1,3 @@
-import { Observable } from "rxjs";
 declare const onChangeSelectedTags: (payload: string[]) => void;
 export { onChangeSelectedTags };
 export declare enum AdFilters {
@@ -8,7 +7,7 @@ export declare enum AdFilters {
 }
 declare const onChangeSelectedFilter: (payload: AdFilters) => void;
 export { onChangeSelectedFilter };
-export declare const useActiveFilter: () => AdFilters, activeFilter$: Observable<AdFilters>;
+export declare const useActiveFilter: () => AdFilters, activeFilter$: import("@react-rxjs/core").DefaultedStateObservable<AdFilters>;
 export declare const useMyAdsCount: () => number;
 export declare const useMyCommentedAdsCount: () => number;
 export declare const useFilteredAds: () => number[];

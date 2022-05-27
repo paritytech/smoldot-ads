@@ -29,6 +29,6 @@ declare const useAccounts: () => {
 export { useAccounts };
 declare const onSelectActiveAccount: (address: string) => void;
 export { onSelectActiveAccount };
-export declare const useActiveAccount: () => InjectedAccount | KeyringPairAccount, activeAccount$: import("rxjs").Observable<InjectedAccount | KeyringPairAccount>;
+export declare const useActiveAccount: () => InjectedAccount | KeyringPairAccount, activeAccount$: import("@react-rxjs/core").StateObservable<InjectedAccount | KeyringPairAccount>;
 export declare const useAccountBalance: () => number | null;
 //# sourceMappingURL=accounts.d.ts.map

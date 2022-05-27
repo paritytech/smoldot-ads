@@ -8,9 +8,9 @@ export interface Ad {
     created: Date;
     numOfComments: number;
 }
-export declare const useAdsAmount: () => number, adsAmount$: import("rxjs").Observable<number>;
+export declare const useAdsAmount: () => number, adsAmount$: import("@react-rxjs/core").DefaultedStateObservable<number>;
 export declare const adIds$: import("rxjs").Observable<number[]>;
-export declare const useAd: (adIdx: number) => Ad | null, ad$: (adIdx: number) => import("rxjs").Observable<Ad | null>;
+export declare const useAd: (adIdx: number) => Ad | null, ad$: (adIdx: number) => import("@react-rxjs/core").StateObservable<Ad | null>;
 export declare const createAd: (title: string, content: string, tags: string[], cb?: ((result: ISubmittableResult) => void) | undefined) => import("rxjs").Subscription;
 export declare const deleteAd: (adIdx: number, cb?: ((result: ISubmittableResult) => void) | undefined) => import("rxjs").Subscription;
 export declare const updateAd: (adIdx: number, title: string, content: string, tags: string[], cb?: ((result: ISubmittableResult) => void) | undefined) => import("rxjs").Subscription;
