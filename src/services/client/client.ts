@@ -37,7 +37,7 @@ export { changeProvider }
 const api$ = providerChange$.pipe(
   startWith(DEFAULT_PROVIDER),
   switchMap(async () => {
-    const rococoProvider = new ScProvider(WellKnownChain.rococo_v2_1)
+    const rococoProvider = new ScProvider(WellKnownChain.rococo_v2_2)
     await rococoProvider.connect()
     const provider = new ScProvider(JSON.stringify(adz), rococoProvider)
 

@@ -11,8 +11,11 @@
   "telemetryEndpoints": null,
   "protocolId": null,
   "forkId": null,
-  "properties": null,
-  "relay_chain": "rococo_v2_1",
+  "properties": {
+    "tokenDecimals": 12,
+    "tokenSymbol": "ROC"
+  },
+  "relay_chain": "rococo_v2_2",
   "para_id": 2200,
   "consensusEngine": null,
   "codeSubstitutes": {},
